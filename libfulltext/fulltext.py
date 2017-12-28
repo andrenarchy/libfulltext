@@ -1,13 +1,12 @@
 from .elsevier import getElsevierFulltext
 from .springer import getSpringerFulltext
+from .aps import getAPSFulltext
 from .crossref import getCrossrefMetadata
 
-# metadata['message']['publisher'] = "American Physical Society (APS)"
-#if 16 == metadata['message']['member']:
-publisherHandler = {
-        '78': (getElsevierFulltext,"elsevier"),
-        '297': (getSpringerFulltext,"springer")
-        }
+publisherHandler = {'78': (getElsevierFulltext, "elsevier"),
+                    '297': (getSpringerFulltext, "springer"),
+                    '16': (getAPSFulltext, "APS")
+                    }
 
 
 def handleDoi(config, doi):
