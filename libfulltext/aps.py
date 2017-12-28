@@ -2,6 +2,13 @@ import requests
 
 
 def getAPSFulltext(metadata, config):
+    """
+    getAPSFulltext
+
+    Args:
+        metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
+        config:   configuration for the corresponding publisher (ignored)
+    """
     doi = metadata['message']['DOI']
 
     r = requests.get(
