@@ -2,6 +2,13 @@ import requests
 
 
 def getElsevierFulltext(metadata, config):
+    """
+    getElsevierFulltext
+
+    Args:
+        metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
+        config:   configuration for the corresponding publisher. Needs `config["apikey"]`
+    """
     doi = metadata['message']['DOI']
     params = {
       'apiKey': config["apikey"],
