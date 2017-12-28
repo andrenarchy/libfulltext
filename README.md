@@ -12,4 +12,4 @@ publishers:
 
 ### Elsevier API key
 You can get an Elsevier API key by clicking yourself an
-[Elsevier developer account](https://dev.elsevier.com/user/registration)
+[Elsevier developer account](https://dev.elsevier.com/user/registration).
