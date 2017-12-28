@@ -5,7 +5,7 @@ def getSpringerFulltext(metadata, config):
     doi = metadata['message']['DOI']
 
     r = requests.get(
-            'https://link.springer.com/content/pdf/{0}.pdf'.format(doi) + doi,
+            'https://link.springer.com/content/pdf/{0}.pdf'.format(doi),
             stream=True
             )
     with open('/tmp/bla.pdf', 'wb') as fd:
