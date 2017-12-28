@@ -13,7 +13,7 @@ def dump_default_config(path):
     cfg = dict()
     cfg["publishers"] = dict()
     cfg["publishers"]["elsevier"] = dict()
-    cfg["publishers"]["elsevier"]["api_key"] = elsevier_api_key
+    cfg["publishers"]["elsevier"]["apikey"] = elsevier_api_key
 
     dirname = os.path.dirname(path)
     os.makedirs(dirname, exist_ok=True)
