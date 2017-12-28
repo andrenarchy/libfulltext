@@ -1,9 +1,9 @@
 import requests
 
 
-def getSpringerFulltext(metadata, config):
+def getAPSFulltext(metadata, config):
     """
-    getSpringerFulltext
+    getAPSFulltext
 
     Args:
         metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
@@ -12,7 +12,8 @@ def getSpringerFulltext(metadata, config):
     doi = metadata['message']['DOI']
 
     r = requests.get(
-            'https://link.springer.com/content/pdf/{0}.pdf'.format(doi),
+            'http://harvest.aps.org/v2/journals/articles/{0}'.format(doi),
+            headers={"Accept": "application/pdf"},
             stream=True
             )
     with open('/tmp/bla.pdf', 'wb') as fd:
