@@ -1,7 +1,7 @@
 import requests
 
 from .elsevier import getElsevierFulltext
-from .metadata import getCrossrefMetadata
+from .crossref import getCrossrefMetadata
 
 def handleDoi(config, doi):
     # dois are case insensitive (wtf!)
