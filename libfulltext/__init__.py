@@ -1,0 +1,1 @@
+from .fulltext import getFulltext
