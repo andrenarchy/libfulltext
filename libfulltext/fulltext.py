@@ -13,7 +13,7 @@ def get_fulltext(config, prefixed_identifier):
     Args:
         config:               configuration dictionary (see config.py)
         prefixed_identifier:  article identifier with prefix
-                               (e.g. "doi:10.1016/j.cortex.2015.10.021")
+                              (e.g. "doi:10.1016/j.cortex.2015.10.021")
 
     Raises:
         ValueError: Prefix is not implemented
