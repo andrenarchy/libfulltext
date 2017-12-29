@@ -1,9 +1,8 @@
 """American Physical Society publisher module"""
 
 import requests
-from ...stream import save_to_file
 
-def get_aps_fulltext(metadata):
+def get_aps_fulltext(metadata, save_stream):
     """Retrieve APS fulltext
 
     Args:
@@ -17,4 +16,4 @@ def get_aps_fulltext(metadata):
         headers={"Accept": "application/pdf"},
         stream=True
         )
-    save_to_file(response)
+    save_stream(response, 'fulltext.pdf')
