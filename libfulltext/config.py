@@ -8,6 +8,7 @@ DEFAULT_CONFIG_PATH = "~/.config/libfulltext/config.yaml"
 
 
 class Config(dict):
+    """Configuration dictionary."""
     def __init__(self, path=DEFAULT_CONFIG_PATH):
         super(Config, self).__init__()
         path = os.path.expanduser(path)
