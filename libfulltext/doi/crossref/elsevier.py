@@ -1,7 +1,7 @@
 """Elsevier publisher module"""
 
 import requests
-from .stream import save_to_file
+from ...stream import save_to_file
 
 def get_elsevier_fulltext(metadata, apikey):
     """Retrieve Elsevier fulltext
