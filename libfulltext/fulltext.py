@@ -1,15 +1,9 @@
 """Fulltext retrieval module"""
 
-from .elsevier import get_elsevier_fulltext
-from .springer import get_springer_fulltext
 from .aps import get_aps_fulltext
 from .crossref import get_crossref_metadata
-
-PUBLISHER_HANDLERS = {
-    '78': (get_elsevier_fulltext, "elsevier"),
-    '297': (get_springer_fulltext, "springer"),
-    '16': (get_aps_fulltext, "APS")
-    }
+from .elsevier import get_elsevier_fulltext
+from .springer import get_springer_fulltext
 
 def handle_doi(config, doi):
     """Handle a DOI"""
@@ -17,27 +11,17 @@ def handle_doi(config, doi):
     doi = doi.lower()
 
     metadata = get_crossref_metadata(doi)
+    crossref_member = metadata['message']['member']
 
-    try:
-        crossref_member_id = metadata['message']['member']
-    except KeyError:
-        # fixme: do this more nicely
-        raise ValueError("There is no publisher data !!!! we're all gonna die")
+    if crossref_member == '16':
+        return get_aps_fulltext(metadata)
+    elif crossref_member == '78':
+        return get_elsevier_fulltext(metadata, apikey=config['publishers']['elsevier']['apikey'])
+    elif crossref_member == '297':
+        return get_springer_fulltext(metadata)
 
-    try:
-        # publisher name to retrieve configuration from config file
-        publisher_handler, publisher_name = PUBLISHER_HANDLERS[crossref_member_id]
-    except KeyError:
-        raise NotImplementedError(
-            "getFulltext not implemented for member {}, "
-            "publisher {}".format(
-                metadata['message']['member'],
-                metadata['message']['publisher']
-                )
-            )
-
-    return publisher_handler(metadata, config.get(publisher_name, dict()))
-
+    raise ValueError('No handler for DOI {0} (publisher {1}) found.'
+                     .format(doi, metadata['message']['publisher']))
 
 PREFIX_HANDLERS = {
     'doi': handle_doi,

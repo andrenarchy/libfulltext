@@ -3,7 +3,7 @@
 import requests
 from .stream import save_to_file
 
-def get_elsevier_fulltext(metadata, config):
+def get_elsevier_fulltext(metadata, apikey):
     """Retrieve Elsevier fulltext
 
     Args:
@@ -12,7 +12,7 @@ def get_elsevier_fulltext(metadata, config):
     """
     doi = metadata['message']['DOI']
     params = {
-        'apiKey': config["apikey"],
+        'apiKey': apikey,
         'httpAccept': 'application/pdf',
     }
 
