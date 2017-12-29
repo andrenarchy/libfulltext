@@ -19,11 +19,10 @@ def get_fulltext(config, prefixed_identifier):
     Raises:
         ValueError: Prefix is not implemented
     """
-    try:
-        prefix, identifier = prefixed_identifier.split(':', 1)
-    except ValueError:
+    if ":" not in prefixed_identifier:
         raise ValueError('No prefix provided')
 
+    prefix, identifier = prefixed_identifier.split(':', 1)
     try:
         handler = PREFIX_HANDLERS[prefix]
     except KeyError:
