@@ -11,7 +11,8 @@ def get_fulltext(config, prefixed_identifier):
     """Get fulltext for a prefixed ID
 
     Args:
-        config:               configuration dictionary (see config.py)
+        config:               configuration dictionary
+                              (see config.py and README.md)
         prefixed_identifier:  article identifier with prefix
                               (e.g. "doi:10.1016/j.cortex.2015.10.021")
 
