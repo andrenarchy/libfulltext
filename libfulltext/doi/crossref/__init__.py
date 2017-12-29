@@ -1,6 +1,8 @@
 """CrossRef DOI handler module"""
+
+import requests
+
 from .aps import get_aps_fulltext
-from .crossref import get_crossref_metadata
 from .elsevier import get_elsevier_fulltext
 from .springer import get_springer_fulltext
 
@@ -19,3 +21,7 @@ def get_crossref_fulltext(config, doi):
 
     raise ValueError('No handler for DOI {0} (publisher {1}) found.'
                      .format(doi, metadata['message']['publisher']))
+
+def get_crossref_metadata(doi):
+    """Returns dict with CrossRef metadata for a DOI"""
+    return requests.get('https://api.crossref.org/v1/works/' + doi).json()
