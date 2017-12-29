@@ -7,7 +7,6 @@ Put this example configuration at `~/.config/libfulltext/config.yaml`:
 publishers:
   elsevier:
     apikey: "your_elsevier_api_key_here"
-  springer: {}
 ```
 
 ### Elsevier API key
