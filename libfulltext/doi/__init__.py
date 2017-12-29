@@ -5,8 +5,17 @@ import requests
 from .crossref import get_crossref_fulltext
 from .datacite import get_datacite_fulltext
 
+
 def get_doi_fulltext(config, doi):
-    """Get fulltext for a DOI"""
+    """Get the fulltext for a DOI
+
+    Args:
+        config:  configuration dictionary (see config.py)
+        doi:     DOI as string
+
+    Raises:
+        ValueError: Function to handle publisher is not implemented
+    """
 
     # dois are case insensitive (wtf!)
     doi = doi.lower()
@@ -20,6 +29,7 @@ def get_doi_fulltext(config, doi):
 
     raise NotImplementedError('Registration agency {0} is not yet implemented.'
                               .format(registration_agency))
+
 
 def get_doi_registration_agency(doi):
     """Get registration agency for a DOI"""
