@@ -1,49 +1,53 @@
-from .elsevier import getElsevierFulltext
-from .springer import getSpringerFulltext
-from .aps import getAPSFulltext
-from .crossref import getCrossrefMetadata
+"""Fulltext retrieval module"""
 
-publisherHandler = {'78': (getElsevierFulltext, "elsevier"),
-                    '297': (getSpringerFulltext, "springer"),
-                    '16': (getAPSFulltext, "APS")
-                    }
+from .elsevier import get_elsevier_fulltext
+from .springer import get_springer_fulltext
+from .aps import get_aps_fulltext
+from .crossref import get_crossref_metadata
 
+PUBLISHER_HANDLERS = {
+    '78': (get_elsevier_fulltext, "elsevier"),
+    '297': (get_springer_fulltext, "springer"),
+    '16': (get_aps_fulltext, "APS")
+    }
 
-def handleDoi(config, doi):
+def handle_doi(config, doi):
+    """Handle a DOI"""
     # dois are case insensitive (wtf!)
     doi = doi.lower()
 
-    metadata = getCrossrefMetadata(doi)
+    metadata = get_crossref_metadata(doi)
 
     try:
-        crossRefMemberId = metadata['message']['member']
+        crossref_member_id = metadata['message']['member']
     except KeyError:
         # fixme: do this more nicely
         raise ValueError("There is no publisher data !!!! we're all gonna die")
 
     try:
         # publisher name to retrieve configuration from config file
-        publisherGetter, publisherName = publisherHandler[crossRefMemberId]
+        publisher_handler, publisher_name = PUBLISHER_HANDLERS[crossref_member_id]
     except KeyError:
         raise NotImplementedError(
-                "getFulltext not implemented for member {}, "
-                "publisher {}".format(
-                    metadata['message']['member'],
-                    metadata['message']['publisher']
-                    )
+            "getFulltext not implemented for member {}, "
+            "publisher {}".format(
+                metadata['message']['member'],
+                metadata['message']['publisher']
                 )
+            )
 
-    return publisherGetter(metadata, config[publisherName])
+    return publisher_handler(metadata, config[publisher_name])
 
 
-prefixHandlers = {
-    'doi': handleDoi,
+PREFIX_HANDLERS = {
+    'doi': handle_doi,
 }
 
-def getFulltext(config, prefixedId):
-    prefix, id = prefixedId.split(':', 1)
+def get_fulltext(config, prefixed_identifier):
+    """Get fulltext for a prefixed ID"""
+    prefix, identifier = prefixed_identifier.split(':', 1)
     try:
-        handler = prefixHandlers[prefix]
+        handler = PREFIX_HANDLERS[prefix]
     except KeyError:
         raise ValueError('Prefix {0} unknown.'.format(prefix))
-    r = handler(config, id)
+    handler(config, identifier)

@@ -1,1 +1,3 @@
-from .fulltext import getFulltext
+"""libfulltext module"""
+
+from .fulltext import get_fulltext
