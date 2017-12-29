@@ -1,9 +1,10 @@
+"""American Physical Society publisher module"""
+
 import requests
+from .stream import save_to_file
 
-
-def getAPSFulltext(metadata, config):
-    """
-    getAPSFulltext
+def get_aps_fulltext(metadata):
+    """Retrieve APS fulltext
 
     Args:
         metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
@@ -11,11 +12,9 @@ def getAPSFulltext(metadata, config):
     """
     doi = metadata['message']['DOI']
 
-    r = requests.get(
-            'http://harvest.aps.org/v2/journals/articles/{0}'.format(doi),
-            headers={"Accept": "application/pdf"},
-            stream=True
-            )
-    with open('/tmp/bla.pdf', 'wb') as fd:
-        for chunk in r.iter_content(chunk_size=128):
-            fd.write(chunk)
+    response = requests.get(
+        'http://harvest.aps.org/v2/journals/articles/{0}'.format(doi),
+        headers={"Accept": "application/pdf"},
+        stream=True
+        )
+    save_to_file(response)
