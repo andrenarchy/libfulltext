@@ -11,7 +11,6 @@ class Config(dict):
     def __setdefault(self):
         self.setdefault("publishers", dict())
         self["publishers"].setdefault("elsevier", dict())
-        self["publishers"].setdefault("springer", dict())
 
     def __init__(self, path=DEFAULT_CONFIG_PATH):
         super(Config, self).__init__()

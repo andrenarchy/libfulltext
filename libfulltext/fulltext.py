@@ -36,7 +36,7 @@ def handle_doi(config, doi):
                 )
             )
 
-    return publisher_handler(metadata, config[publisher_name])
+    return publisher_handler(metadata, config.get(publisher_name, dict()))
 
 
 PREFIX_HANDLERS = {
