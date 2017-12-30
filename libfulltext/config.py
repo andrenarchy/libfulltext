@@ -1,25 +1,21 @@
-"""Config module"""
+"""Config handling module"""
 
 import os
 import yaml
 
 # Default location for the configuration file
-DEFAULT_CONFIG_PATH = "~/.config/libfulltext/config.yaml"
+DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/libfulltext/config.yaml")
 
 
-class Config(dict):
-    """Configuration dictionary."""
-    def __init__(self, path=DEFAULT_CONFIG_PATH):
-        super(Config, self).__init__()
-        path = os.path.expanduser(path)
+def parse(path=DEFAULT_CONFIG_PATH):
+    """Parse config file or config stream
+
+    Args:
+        path:       Path to the configuration yaml file
+                    or file stream with its content.
+    """
+    if isinstance(path, str):
         with open(path, "r") as file:
-            cfg_raw = yaml.safe_load(file)
-        self.update(cfg_raw)
-        self.path = path
-
-    def save(self, path=None):
-        """Save config to file"""
-        if path is None:
-            path = self.path
-        with open(path, "w") as file:
-            yaml.safe_dump(dict(self), file)
+            return parse(file)
+    else:
+        return yaml.safe_load(path)

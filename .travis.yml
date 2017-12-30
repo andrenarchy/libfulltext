@@ -6,4 +6,4 @@ before_install:
     - pip install -r requirements.txt
     - pip install pylint
 script:
-    - pylint libfulltext
+    - pylint bin libfulltext
