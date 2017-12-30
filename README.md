@@ -1,5 +1,6 @@
 # libfulltext
 [![Build Status](https://travis-ci.org/andrenarchy/libfulltext.svg?branch=master)](https://travis-ci.org/andrenarchy/libfulltext)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 libfulltext is a python suite to aid with bulk-downloading open-access papers.
 Our aim is to allow to quickly determine a list of open-access papers
@@ -26,11 +27,16 @@ publishers:
 
 ### Getting your API keys
 - Elsevier:
-    1. Get an [Elsevier developer account](https://dev.elsevier.com/user/registration)
+    1. Get an [Elsevier developer account][elsevier-api]
     2. Log in and create an API key.
 
 ## 34c3 hacking pad
-This project started from a workshop at 34c3.
+This project started from a workshop at [34c3][34c3].
 Some information, ideas and resources are not yet transfered
 related to this project you can find on the
-[34c3 open science workshop](https://hackmd.io/CYMwRgjApgxgbBAtMMtEBYCGwlgEzAAciYcwA7BJuoeiAMyZA===) pad.
+[34c3 open science workshop][pad] pad.
+
+
+[pad]:           https://hackmd.io/CYMwRgjApgxgbBAtMMtEBYCGwlgEzAAciYcwA7BJuoeiAMyZA===
+[elsevier-api]:  https://dev.elsevier.com/user/registration
+[34c3]:          https://events.ccc.de/congress/2017/wiki/index.php/Main_Page
