@@ -45,9 +45,10 @@ def get_fulltext(config, prefixed_id, prefixed_id_file):
             # Close the input to stop the blocking stdin.
             prefixed_id_file.close()
     else:
-        prefixed_id = prefixed_id_file.read().split("\n")
+        prefixed_id = [line.strip() for line in prefixed_id_file.readlines()]
 
     for prfid in prefixed_id:
+        print("Downloading", prfid)
         libfulltext.get_fulltext(prfid, "/tmp/libfulltext", cfg)
 
 
