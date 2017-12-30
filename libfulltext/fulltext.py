@@ -17,7 +17,7 @@ def get_fulltext(config, prefixed_identifier):
                               (e.g. "doi:10.1016/j.cortex.2015.10.021")
 
     Raises:
-        ValueError: Prefix is not implemented
+        ValueError: Prefix is not implemented, of not provided by caller
     """
     if ":" not in prefixed_identifier:
         raise ValueError('No prefix provided')
