@@ -25,15 +25,14 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file):
 
     Examples for prefixed document identifiers:
         doi:10.1016/j.cortex.2015.10.021
-
-    Args:
-        config:            path to configuration file (string)
-        prefixed_ids:      list of prefixed document identifiers (list of strings)
-        prefixed_id_file:  plain text file with prefixed document identifiers (stream)
-
-    Raises:
-        SystemExit: incompatible inputs (identifiers from multiple inputs)
     """
+    # Args:
+    #     config:            path to configuration file (string)
+    #     prefixed_ids:      list of prefixed document identifiers (list of strings)
+    #     prefixed_id_file:  plain text file with prefixed document identifiers (stream)
+
+    # Raises:
+    #     SystemExit: incompatible inputs (identifiers from multiple inputs)
 
     # Setup the config dictionary:
     cfg = libfulltext.config.parse(config)
