@@ -1,5 +1,6 @@
 # libfulltext
 
+[![Build Status](https://travis-ci.org/andrenarchy/libfulltext.svg?branch=master)](https://travis-ci.org/andrenarchy/libfulltext)
 
 ## Example configuration
 Put this example configuration at `~/.config/libfulltext/config.yaml`:

@@ -19,8 +19,11 @@ def get_fulltext(prefixed_identifier, fulltext_dirname, config):
                               (see config.py and README.md)
 
     Raises:
-        ValueError: Prefix is not implemented
+        ValueError: Prefix is not implemented or not provided by caller
     """
+    if ":" not in prefixed_identifier:
+        raise ValueError('No prefix provided')
+
     prefix, identifier = prefixed_identifier.split(':', 1)
     try:
         fulltext_getter = PREFIX_FULLTEXT_GETTER[prefix]
