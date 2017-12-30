@@ -8,6 +8,7 @@ PREFIX_FULLTEXT_GETTER = {
     'doi': get_doi_fulltext,
 }
 
+
 def get_fulltext(prefixed_identifier, fulltext_dirname, config):
     """Get fulltext for a prefixed ID
 
@@ -31,7 +32,25 @@ def get_fulltext(prefixed_identifier, fulltext_dirname, config):
         raise ValueError('Prefix {0} unknown.'.format(prefix))
 
     def save_stream(stream, path):
-        """Save a stream to fulltext_dirname/prefix/identifier/path"""
+        """Save a stream to fulltext_dirname/prefix/identifier/path
+
+        There might be several files connected to a DOI, each to be saved under
+        a different filename. The actual getter function only provides the
+        "path" part of the above full filename, the
+        fulltext_dirname/prefix/identifier gets set when save_stream is
+        defined.
+
+        Args:
+            stream: the data stream that will be stored
+            path:   the filename in the pre-configured directory to which the stream
+                    should get saved
+
+        Raises:
+            ValueError: Malicious parts in the identifier or path can cause
+                        collisions with other identifiers or break out of the
+                        libfulltext directory.
+        """
+
         fulltext_dirname_abs = os.path.abspath(fulltext_dirname)
         destination_path = os.path.join(fulltext_dirname_abs, prefix, identifier, path)
 
