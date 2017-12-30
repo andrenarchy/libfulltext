@@ -1,19 +1,16 @@
 """SpringerNature publisher module"""
 
 import requests
-from ...stream import save_to_file
 
-def get_springer_fulltext(metadata):
+def get_springer_fulltext(doi, save_stream):
     """Retrieve SpringerNature fulltext
 
     Args:
-        metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
-        config:   configuration for the corresponding publisher (ignored)
+        doi:         DOI string
+        save_stream: function that saves a stream (arguments: stream, path)
     """
-    doi = metadata['message']['DOI']
-
     response = requests.get(
         'https://link.springer.com/content/pdf/{0}.pdf'.format(doi),
         stream=True
         )
-    save_to_file(response)
+    save_stream(response, 'fulltext.pdf')
