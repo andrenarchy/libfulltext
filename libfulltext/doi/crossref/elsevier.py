@@ -1,16 +1,15 @@
 """Elsevier publisher module"""
 
 import requests
-from ...stream import save_to_file
 
-def get_elsevier_fulltext(metadata, apikey):
+def get_elsevier_fulltext(doi, save_stream, apikey):
     """Retrieve Elsevier fulltext
 
     Args:
-        metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
-        config:   configuration for the corresponding publisher. Needs `config["apikey"]`
+        doi:         DOI string
+        save_stream: function that saves a stream (arguments: stream, path)
+        apikey:      Elsevier API key
     """
-    doi = metadata['message']['DOI']
     params = {
         'apiKey': apikey,
         'httpAccept': 'application/pdf',
@@ -21,4 +20,4 @@ def get_elsevier_fulltext(metadata, apikey):
         params=params,
         stream=True
         )
-    save_to_file(response)
+    save_stream(response, 'fulltext.pdf')
