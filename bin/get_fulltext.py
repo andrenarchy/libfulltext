@@ -2,10 +2,10 @@
 
 """get_fulltext CLI command"""
 
+import select
 import click
 import libfulltext
 import libfulltext.config
-import select
 
 # Settings for click
 CLICK_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -52,4 +52,4 @@ def get_fulltext(config, prefixed_id, prefixed_id_file):
 
 
 if __name__ == '__main__':
-    get_fulltext()
+    get_fulltext()  # pylint: disable=E55
