@@ -32,9 +32,21 @@ def get_fulltext(prefixed_identifier, fulltext_dirname, config):
 
     def save_stream(stream, path):
         """Save a stream to fulltext_dirname/prefix/identifier/path"""
-        full_path = os.path.join(fulltext_dirname, prefix, identifier, path)
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        with open(full_path, 'wb') as file:
+        fulltext_dirname_abs = os.path.abspath(fulltext_dirname)
+        destination_path = os.path.join(fulltext_dirname_abs, prefix, identifier, path)
+
+        if not os.path.abspath(destination_path).startswith(fulltext_dirname_abs):
+            raise ValueError('Destination path {0} not in {1}'
+                             .format(destination_path, fulltext_dirname))
+
+        # .. or . in paths can lead to collisions
+        path_elements = destination_path.split('/')
+        if '..' in path_elements or '.' in path_elements:
+            raise ValueError('Destination path {0} contains ".." or ".".'
+                             .format(destination_path))
+
+        os.makedirs(os.path.dirname(destination_path), exist_ok=True)
+        with open(destination_path, 'wb') as file:
             for chunk in stream.iter_content(chunk_size=128):
                 file.write(chunk)
 
