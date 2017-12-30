@@ -2,15 +2,14 @@
 
 import requests
 
-def get_elsevier_fulltext(metadata, save_stream, apikey):
+def get_elsevier_fulltext(doi, save_stream, apikey):
     """Retrieve Elsevier fulltext
 
     Args:
-        metadata:    CrossRef metadata dict
+        doi:         DOI string
         save_stream: function that saves a stream (arguments: stream, path)
         apikey:      Elsevier API key
     """
-    doi = metadata['message']['DOI']
     params = {
         'apiKey': apikey,
         'httpAccept': 'application/pdf',

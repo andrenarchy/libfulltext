@@ -5,13 +5,13 @@ import requests
 from .crossref import get_crossref_fulltext
 from .datacite import get_datacite_fulltext
 
-def get_doi_fulltext(config, doi, save_stream):
+def get_doi_fulltext(doi, save_stream, config):
     """Get the fulltext for a DOI
 
     Args:
-        config:      configuration dictionary (see config.py)
-        doi:         DOI as string
+        doi:         DOI string
         save_stream: function that saves a stream (arguments: stream, path)
+        config:      configuration dictionary (see config.py)
 
     Raises:
         ValueError: Function to handle publisher is not implemented
@@ -23,7 +23,7 @@ def get_doi_fulltext(config, doi, save_stream):
     registration_agency = get_doi_registration_agency(doi)
 
     if registration_agency == 'Crossref':
-        return get_crossref_fulltext(config, doi, save_stream)
+        return get_crossref_fulltext(doi, save_stream, config)
     elif registration_agency == 'DataCite':
         return get_datacite_fulltext()
 

@@ -8,14 +8,15 @@ PREFIX_FULLTEXT_GETTER = {
     'doi': get_doi_fulltext,
 }
 
-def get_fulltext(config, prefixed_identifier, fulltext_dirname):
+def get_fulltext(prefixed_identifier, fulltext_dirname, config):
     """Get fulltext for a prefixed ID
 
     Args:
-        config:               configuration dictionary
-                              (see config.py and README.md)
         prefixed_identifier:  article identifier with prefix
                               (e.g. "doi:10.1016/j.cortex.2015.10.021")
+        fulltext_dirname:     name of root directory for fulltext documents
+        config:               configuration dictionary
+                              (see config.py and README.md)
 
     Raises:
         ValueError: Prefix is not implemented
@@ -34,4 +35,4 @@ def get_fulltext(config, prefixed_identifier, fulltext_dirname):
             for chunk in stream.iter_content(chunk_size=128):
                 file.write(chunk)
 
-    return fulltext_getter(config, identifier, save_stream)
+    return fulltext_getter(identifier, save_stream, config)

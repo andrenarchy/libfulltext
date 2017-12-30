@@ -2,15 +2,13 @@
 
 import requests
 
-def get_aps_fulltext(metadata, save_stream):
+def get_aps_fulltext(doi, save_stream):
     """Retrieve APS fulltext
 
     Args:
-        metadata:    CrossRef metadata dict
+        doi:         DOI string
         save_stream: function that saves a stream (arguments: stream, path)
     """
-    doi = metadata['message']['DOI']
-
     response = requests.get(
         'http://harvest.aps.org/v2/journals/articles/{0}'.format(doi),
         headers={"Accept": "application/pdf"},
