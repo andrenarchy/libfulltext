@@ -29,7 +29,7 @@ def get_fulltext(prefixed_identifier, fulltext_dirname, config):
 
     def save_stream(stream, path):
         """Save a stream to fulltext_dirname/prefix/identifier/path"""
-        full_path = '{0}/{1}/{2}/{3}'.format(fulltext_dirname, prefix, identifier, path)
+        full_path = os.path.join(fulltext_dirname, prefix, identifier, path)
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         with open(full_path, 'wb') as file:
             for chunk in stream.iter_content(chunk_size=128):
