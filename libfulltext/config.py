@@ -8,9 +8,13 @@ DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/libfulltext/config.yaml")
 
 
 def parse(path=DEFAULT_CONFIG_PATH):
-    """Parse config file or config stream"""
+    """Parse config file or config stream
+
+    Args:
+        path:       Path to the configuration yaml file
+                    or file stream with its content.
+    """
     if isinstance(path, str):
-        path = os.path.expanduser(path)
         with open(path, "r") as file:
             return parse(file)
     else:
