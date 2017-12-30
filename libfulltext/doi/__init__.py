@@ -9,8 +9,9 @@ def get_doi_fulltext(config, doi, save_stream):
     """Get the fulltext for a DOI
 
     Args:
-        config:  configuration dictionary (see config.py)
-        doi:     DOI as string
+        config:      configuration dictionary (see config.py)
+        doi:         DOI as string
+        save_stream: function that saves a stream (arguments: stream, path)
 
     Raises:
         ValueError: Function to handle publisher is not implemented

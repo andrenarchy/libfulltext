@@ -6,8 +6,8 @@ def get_aps_fulltext(metadata, save_stream):
     """Retrieve APS fulltext
 
     Args:
-        metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
-        config:   configuration for the corresponding publisher (ignored)
+        metadata:    CrossRef metadata dict
+        save_stream: function that saves a stream (arguments: stream, path)
     """
     doi = metadata['message']['DOI']
 

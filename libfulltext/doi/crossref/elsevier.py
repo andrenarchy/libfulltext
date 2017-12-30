@@ -6,8 +6,9 @@ def get_elsevier_fulltext(metadata, save_stream, apikey):
     """Retrieve Elsevier fulltext
 
     Args:
-        metadata: meta data dictionary about the DOI. Needs `metadata['message']['DOI']`
-        config:   configuration for the corresponding publisher. Needs `config["apikey"]`
+        metadata:    CrossRef metadata dict
+        save_stream: function that saves a stream (arguments: stream, path)
+        apikey:      Elsevier API key
     """
     doi = metadata['message']['DOI']
     params = {
