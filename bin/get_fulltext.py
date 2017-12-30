@@ -52,4 +52,5 @@ def get_fulltext(config, prefixed_id, prefixed_id_file):
 
 
 if __name__ == '__main__':
-    get_fulltext()  # pylint: disable=E55
+    # Click automatically inserts the arguments here, so pylint should be quiet.
+    get_fulltext()  # pylint: disable=bad-option-value,no-value-for-parameter
