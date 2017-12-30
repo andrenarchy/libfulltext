@@ -1,6 +1,6 @@
 # libfulltext
 [![Build Status](https://travis-ci.org/andrenarchy/libfulltext.svg?branch=master)](https://travis-ci.org/andrenarchy/libfulltext)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Licence: GPL v3](https://img.shields.io/github/license/andrenarchy/libfulltext.svg)](LICENSE)
 
 libfulltext is a python suite to aid with bulk-downloading open-access papers.
 Our aim is to allow to quickly determine a list of open-access papers
