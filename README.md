@@ -17,13 +17,16 @@ the required API keys for the publishers.
 For some publishers (like Elsevier) we absolutely require
 an API key. See [getting your API keys](#getting-your-api-keys) for details.
 
-For now the simplest is to replicate and adapt the example configuration
-at `~/.config/libfulltext/config.yaml`:
+Before starting to use `libfulltext`, you therefore need to
+place at least the following minimal configuration into
+the file `~/.config/libfulltext/config.yaml`:
 ```yaml
 publishers:
   elsevier:
     apikey: "your_elsevier_api_key_here"
 ```
+For a more complete guide to the configuration file,
+see [doc/Config.md](doc/Config.md).
 
 ### Getting your API keys
 - Elsevier:
