@@ -2,6 +2,7 @@
 
 """get_fulltext CLI command"""
 
+
 import select
 import click
 import libfulltext
@@ -51,6 +52,13 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file):
         else:
             # Close the input to stop the blocking stdin.
             prefixed_id_file.close()
+    elif prefixed_id_file.isatty():
+        # If the prefixed_id_file is a TTY, then the script waits for
+        # interactive user input on STDIN. This typically indicates a forgotten
+        # flag or commandline option and hence we bail out with an error.
+        raise SystemExit("Please provide prefixed IDs on STDIN, a file "
+                         "via --prefixed-id-file or alternatively directly "
+                         "on the commandline.")
     else:
         prefixed_ids = [line.strip() for line in prefixed_id_file.readlines()]
 
