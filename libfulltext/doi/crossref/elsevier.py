@@ -20,4 +20,14 @@ def get_elsevier_fulltext(doi, save_stream, apikey):
         params=params,
         stream=True
         )
+    response.raise_for_status()
+
+    # Elsevier sometimes only returns the first page (yep, also for OA content)
+    elsevier_status = response.headers['X-ELS-Status']
+    if 'WARNING' in response.headers['X-ELS-Status']:
+        raise requests.exceptions.HTTPError(
+            'X-ELS-Status indicates that request was not successful: {0}'
+            .format(elsevier_status)
+            )
+
     save_stream(response, 'fulltext.pdf')

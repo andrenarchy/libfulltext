@@ -14,4 +14,6 @@ def get_aps_fulltext(doi, save_stream):
         headers={"Accept": "application/pdf"},
         stream=True
         )
+    response.raise_for_status()
+
     save_stream(response, 'fulltext.pdf')

@@ -13,4 +13,6 @@ def get_springer_fulltext(doi, save_stream):
         'https://link.springer.com/content/pdf/{0}.pdf'.format(doi),
         stream=True
         )
+    response.raise_for_status()
+
     save_stream(response, 'fulltext.pdf')

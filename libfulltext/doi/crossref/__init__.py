@@ -33,4 +33,6 @@ def get_crossref_metadata(doi):
     Returns:
         dict with CrossRef metadata
     """
-    return requests.get('https://api.crossref.org/v1/works/' + doi).json()
+    response = requests.get('https://api.crossref.org/v1/works/' + doi)
+    response.raise_for_status()
+    return response.json()
