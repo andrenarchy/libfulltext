@@ -26,7 +26,7 @@ publishers:
     apikey: "your_elsevier_api_key_here"
 ```
 For a more complete guide to the configuration file,
-see [doc/Config.md](doc/Config.md).
+see [doc/config.md](doc/config.md).
 
 ### Getting your API keys
 - Elsevier:
