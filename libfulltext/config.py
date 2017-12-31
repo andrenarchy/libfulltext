@@ -18,4 +18,9 @@ def parse(path=DEFAULT_CONFIG_PATH):
         with open(path, "r") as file:
             return parse(file)
     else:
-        return yaml.safe_load(path)
+        cfg = yaml.safe_load(path)
+
+        # Insert defaults
+        cfg.setdefault("storage", dict())
+        cfg["storage"].setdefault("fulltext", os.path.abspath("fulltext"))
+        return cfg

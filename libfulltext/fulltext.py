@@ -9,13 +9,12 @@ PREFIX_FULLTEXT_GETTER = {
 }
 
 
-def get_fulltext(prefixed_identifier, fulltext_dirname, config):
+def get_fulltext(prefixed_identifier, config):
     """Get fulltext for a prefixed ID
 
     Args:
         prefixed_identifier:  article identifier with prefix
                               (e.g. "doi:10.1016/j.cortex.2015.10.021")
-        fulltext_dirname:     name of root directory for fulltext documents
         config:               configuration dictionary
                               (see config.py and README.md)
 
@@ -30,6 +29,9 @@ def get_fulltext(prefixed_identifier, fulltext_dirname, config):
         fulltext_getter = PREFIX_FULLTEXT_GETTER[prefix]
     except KeyError:
         raise ValueError('Prefix {0} unknown.'.format(prefix))
+
+    # fulltext sanitisation:
+    fulltext_dirname = os.path.abspath(config["storage"]["fulltext"])
 
     def save_stream(stream, path):
         """Save a stream to fulltext_dirname/prefix/identifier/path
@@ -51,10 +53,9 @@ def get_fulltext(prefixed_identifier, fulltext_dirname, config):
                         libfulltext directory.
         """
 
-        fulltext_dirname_abs = os.path.abspath(fulltext_dirname)
-        destination_path = os.path.join(fulltext_dirname_abs, prefix, identifier, path)
+        destination_path = os.path.join(fulltext_dirname, prefix, identifier, path)
 
-        if not os.path.abspath(destination_path).startswith(fulltext_dirname_abs):
+        if not os.path.abspath(destination_path).startswith(fulltext_dirname):
             raise ValueError('Destination path {0} not in {1}'
                              .format(destination_path, fulltext_dirname))
 

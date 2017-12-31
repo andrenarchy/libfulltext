@@ -19,7 +19,11 @@ CLICK_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option("-f", "--prefixed-id-file", default="-", type=click.File(),
               help="File with list of prefixed document identifiers, one per line. "
               "By default '-', i.e. stdin, is chosen.")
-def get_fulltext(config, prefixed_ids, prefixed_id_file):
+@click.option("-d", "--directory", default=None,
+              type=click.Path(exists=False, file_okay=False, resolve_path=True),
+              help="Directory where downloaded full texts are stored. "
+              "Overwrites the config value.")
+def get_fulltext(config, prefixed_ids, prefixed_id_file, directory):
     """
     Obtain the fulltext pdfs for a number of documents,
     which are identified by so-called prefixed document identifiers.
@@ -37,6 +41,8 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file):
 
     # Setup the config dictionary:
     cfg = libfulltext.config.parse(config)
+    if directory is not None:
+        cfg["storage"]["fulltext"] = directory
 
     if prefixed_ids:
         # If we have IDs on the command line, we do not want
@@ -64,7 +70,7 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file):
 
     for prfid in prefixed_ids:
         print("Downloading", prfid)
-        libfulltext.get_fulltext(prfid, "/tmp/libfulltext", cfg)
+        libfulltext.get_fulltext(prfid, cfg)
 
 
 if __name__ == '__main__':
