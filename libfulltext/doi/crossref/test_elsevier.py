@@ -20,10 +20,11 @@ class GetElsevierFulltextTest(TestCase):
             )
 
     def test_incomplete_pdf(self):
-        """An incomplete PDF (restricted to first page) should be detected"""
+        """An incomplete PDF (restricted to first page) should be detected.
+        The DOI is a non-OA article."""
         with self.assertRaises(Exception) as context:
             get_elsevier_fulltext(
-                '10.1016/j.physletb.2016.07.042',
+                '10.1016/j.laa.2017.12.020',
                 lambda stream, filename: None,
                 apikey='f7840794d3322d4b56a9cf687aecfccb'
                 )
