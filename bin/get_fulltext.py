@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 
 """get_fulltext CLI command"""
-
 
 import select
 import click

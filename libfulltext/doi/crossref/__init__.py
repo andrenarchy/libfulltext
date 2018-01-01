@@ -1,3 +1,4 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """CrossRef DOI handler module"""
 
 import requests

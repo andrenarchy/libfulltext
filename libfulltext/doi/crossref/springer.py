@@ -1,6 +1,8 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """SpringerNature publisher module"""
 
 import requests
+
 
 def get_springer_fulltext(doi, save_stream):
     """Retrieve SpringerNature fulltext

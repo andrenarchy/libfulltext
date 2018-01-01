@@ -1,6 +1,8 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """American Physical Society publisher module"""
 
 import requests
+
 
 def get_aps_fulltext(doi, save_stream):
     """Retrieve APS fulltext
