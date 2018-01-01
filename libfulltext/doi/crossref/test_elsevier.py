@@ -1,0 +1,40 @@
+"""Unit tests for Elsevier"""
+
+from unittest import TestCase, skip
+
+from ...test_utils import assert_stream
+from .elsevier import get_elsevier_fulltext
+
+class GetElsevierFulltextTest(TestCase):
+    """Test get_elsevier_fulltext"""
+
+    @skip('Elsevier API currently does not return full texts but only page 1 '
+          '(re-enable with a working API key)')
+    @staticmethod
+    def test_sha1():
+        """Compare SHA1 and filename"""
+        get_elsevier_fulltext(
+            '10.1016/j.physletb.2016.07.042',
+            assert_stream('4724fea61643131e32dd4267608f977ffeafb70e', 'fulltext.pdf'),
+            apikey='f7840794d3322d4b56a9cf687aecfccb'
+            )
+
+    def test_incomplete_pdf(self):
+        """An incomplete PDF (restricted to first page) should be detected"""
+        with self.assertRaises(Exception) as context:
+            get_elsevier_fulltext(
+                '10.1016/j.physletb.2016.07.042',
+                lambda stream, filename: None,
+                apikey='f7840794d3322d4b56a9cf687aecfccb'
+                )
+        self.assertIn('Response limited to first page', str(context.exception))
+
+    def test_non_existent_doi(self):
+        """A non-existing DOI should result in an error"""
+        with self.assertRaises(Exception) as context:
+            get_elsevier_fulltext(
+                '10.1103/non-existent',
+                lambda stream, filename: None,
+                apikey='f7840794d3322d4b56a9cf687aecfccb'
+                )
+        self.assertIn('Not Found', str(context.exception))
