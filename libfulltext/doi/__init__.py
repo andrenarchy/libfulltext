@@ -15,7 +15,7 @@ def get_doi_fulltext(doi, save_stream, config):
         config:      configuration dictionary (see config.py)
 
     Returns:
-        What the actual getter returns (usually nothing)
+        What the actual getter returns (usually None)
 
     Raises:
         NotImplementedError: Function to handle publisher is not implemented

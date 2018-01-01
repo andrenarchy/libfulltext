@@ -22,7 +22,7 @@ def get_fulltext(prefixed_identifier, config):
         ValueError: Prefix is not implemented or not provided by caller
     Returns:
         What the actual getter (e.g. get_elsevier_fulltext) returns
-        (usually nothing)
+        (usually None)
     """
     if ":" not in prefixed_identifier:
         raise ValueError('No prefix provided')

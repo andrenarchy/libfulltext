@@ -19,7 +19,7 @@ def get_crossref_fulltext(doi, save_stream, config):
         config:        the libfulltext configuration dictionary
 
     Returns:
-        What the actual getter returns (usually nothing)
+        What the actual getter returns (usually None)
 
     Raises:
         ValueError: no getter function for publisher found
