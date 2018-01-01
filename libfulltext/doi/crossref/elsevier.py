@@ -2,6 +2,7 @@
 
 import requests
 
+
 def get_elsevier_fulltext(doi, save_stream, apikey):
     """Retrieve Elsevier fulltext
 
@@ -9,6 +10,9 @@ def get_elsevier_fulltext(doi, save_stream, apikey):
         doi:         DOI string
         save_stream: function that saves a stream (arguments: stream, path)
         apikey:      Elsevier API key
+
+    Raises:
+        requests.exceptions.HTTPError: request was not successful
     """
     params = {
         'apiKey': apikey,

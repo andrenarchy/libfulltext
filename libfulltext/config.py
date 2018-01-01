@@ -13,6 +13,8 @@ def parse(path=DEFAULT_CONFIG_PATH):
     Args:
         path:       Path to the configuration yaml file
                     or file stream with its content.
+    Returns:
+        parsed configuration dictionary
     """
     if isinstance(path, str):
         with open(path, "r") as file:
