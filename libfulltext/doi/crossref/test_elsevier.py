@@ -2,7 +2,7 @@
 
 from unittest import TestCase, skip
 
-from ...test_utils import assert_stream
+from ...test.utils import assert_stream
 from .elsevier import get_elsevier_fulltext
 
 class GetElsevierFulltextTest(TestCase):

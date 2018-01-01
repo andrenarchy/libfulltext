@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 
-from ...test_utils import assert_stream
+from ...test.utils import assert_stream
 from .aps import get_aps_fulltext
 
 class GetApsFulltextTest(TestCase):

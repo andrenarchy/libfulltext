@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 
-from ...test_utils import assert_stream
+from ...test.utils import assert_stream
 from .springer import get_springer_fulltext
 
 class GetSpringerFulltextTest(TestCase):
