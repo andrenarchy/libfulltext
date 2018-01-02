@@ -1,9 +1,11 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """DOI handler module"""
 
 import requests
 
 from .crossref import get_crossref_fulltext
 from .datacite import get_datacite_fulltext
+
 
 def get_doi_fulltext(doi, save_stream, config):
     """Get the fulltext for a DOI
@@ -13,8 +15,11 @@ def get_doi_fulltext(doi, save_stream, config):
         save_stream: function that saves a stream (arguments: stream, path)
         config:      configuration dictionary (see config.py)
 
+    Returns:
+        What the actual getter returns (usually None)
+
     Raises:
-        ValueError: Function to handle publisher is not implemented
+        NotImplementedError: Function to handle publisher is not implemented
     """
 
     # dois are case insensitive (wtf!)
@@ -32,7 +37,18 @@ def get_doi_fulltext(doi, save_stream, config):
 
 
 def get_doi_registration_agency(doi):
-    """Get registration agency for a DOI"""
+    """Get registration agency for a DOI
+
+    Args:
+        doi: the DOI as a string
+
+    Returns:
+        registration agency as a string
+
+    Raises:
+        ValueError: registration agency not known to doi.org
+    """
+
     response = requests.get('https://doi.org/doiRA/' + doi)
     response.raise_for_status()
     ra_result = response.json()[0]

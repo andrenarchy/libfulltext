@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 
 """get_fulltext CLI command"""
-
 
 import select
 import click
@@ -31,11 +31,13 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file, directory):
     Examples for prefixed document identifiers:
         doi:10.1016/j.cortex.2015.10.021
     """
+    # These comments are not part of the docstring such that click does not
+    # pick them up in the help message
+    #
     # Args:
     #     config:            path to configuration file (string)
     #     prefixed_ids:      list of prefixed document identifiers (list of strings)
     #     prefixed_id_file:  plain text file with prefixed document identifiers (stream)
-
     # Raises:
     #     SystemExit: incompatible inputs (identifiers from multiple inputs)
 

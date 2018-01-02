@@ -39,6 +39,11 @@ Some information, ideas and resources are not yet transfered
 related to this project you can find on the
 [34c3 open science workshop][pad] pad.
 
+# Copyright and License
+
+Copyright (C) 2017-2018 the [libfulltext authors](AUTHORS.md).
+
+libfulltext is published under the [GPL v3 license](LICENSE).
 
 [pad]:           https://hackmd.io/CYMwRgjApgxgbBAtMMtEBYCGwlgEzAAciYcwA7BJuoeiAMyZA===
 [elsevier-api]:  https://dev.elsevier.com/user/registration

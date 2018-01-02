@@ -1,3 +1,4 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Fulltext retrieval module"""
 
 import os
@@ -20,6 +21,9 @@ def get_fulltext(prefixed_identifier, config):
 
     Raises:
         ValueError: Prefix is not implemented or not provided by caller
+    Returns:
+        What the actual getter (e.g. get_elsevier_fulltext) returns
+        (usually None)
     """
     if ":" not in prefixed_identifier:
         raise ValueError('No prefix provided')
