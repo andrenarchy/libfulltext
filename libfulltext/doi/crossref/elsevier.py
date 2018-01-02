@@ -1,3 +1,4 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Elsevier publisher module"""
 
 import requests

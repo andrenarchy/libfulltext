@@ -1,4 +1,6 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Stream module"""
+
 
 def save_to_file(stream, filename='/tmp/bla.pdf'):
     """Save a stream to a file
