@@ -10,3 +10,4 @@ before_install:
 script:
     - pylint bin libfulltext
     - nose2
+    - pip install ${TRAVIS_BUILD_DIR}
