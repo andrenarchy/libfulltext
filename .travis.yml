@@ -9,3 +9,4 @@ before_install:
     - pip install pylint
 script:
     - pylint bin libfulltext
+    - pip install ${TRAVIS_BUILD_DIR}
