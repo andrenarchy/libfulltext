@@ -8,7 +8,15 @@ import yaml
 # Default location for the configuration file
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/libfulltext/config.yaml")
 
+# The prefix to use for the environment variables we care about.
+ENVIRONMENT_VARIABLES_PREFIX = "LIBFULLTEXT"
+
 # Named tuple for the parsed entries of config_metadata.yaml
+# type: Type of the entry
+# description: Description of the entry
+# path: Full path to the entry from the root of the config
+# default: Default value for this entry
+# required: Is this entry required
 ConfigEntry = collections.namedtuple("ConfigEntry",
                                      ["type", "description", "path",
                                       "default", "required"])
@@ -56,7 +64,7 @@ def read_metadata():
             if "type" in value and "description" in value:
                 # The current location of "yaml" is a configuration entry,
                 # so make a ConfigEntry out of it.
-                cfgdata_loc[key] = ConfigEntry(path=path, **value)
+                cfgdata_loc[key] = ConfigEntry(path=fullpath, **value)
             else:
                 # Recurse one level deeper
                 parse_cfgdata(value, cfgdata_loc.setdefault(key, dict()),
@@ -125,14 +133,11 @@ def parse_file(path):
     return ret
 
 
-def parse_env(prefix="LIBFULLTEXT"):
+def parse_env():
     """
     Parse the os environment and return the raw dictionary
     of configuration options generated from it.
 
-    Args:
-        prefix:     The prefix to use for all environment
-                    variables used.
     Returns:
         raw parsed configuration dictionary
     """
@@ -149,9 +154,9 @@ def parse_env(prefix="LIBFULLTEXT"):
         loc[parts[-1]] = value
 
     for key, value in os.environ.items():
-        if key.startswith(prefix):
+        if key.startswith(ENVIRONMENT_VARIABLES_PREFIX):
             # Strip off prefix and insert
-            confdict_insert(key[len(prefix) + 1:], value)
+            confdict_insert(key[len(ENVIRONMENT_VARIABLES_PREFIX) + 1:], value)
 
     try:
         __check_unknown(root, CONFIG_METADATA)
