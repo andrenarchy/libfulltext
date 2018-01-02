@@ -1,11 +1,75 @@
 # copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Config handling module"""
 
+import collections
 import os
 import yaml
 
 # Default location for the configuration file
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/libfulltext/config.yaml")
+
+# Named tuple for the parsed entries of configdata.yaml
+ConfigEntry = collections.namedtuple("ConfigEntry",
+                                     ["type", "description", "path",
+                                      "default", "required"])
+ConfigEntry.__new__.__defaults__ = (None, False)
+
+
+def read_configdata():
+    """
+    Read the configuration data file configdata.yaml and return a dict
+    with the ConfigEntry objects.
+
+    Returns:
+        dictionary of ConfigEntry objects.
+    """
+    cfgdata_file = os.path.join(os.path.dirname(__file__), "configdata.yaml")
+
+    def parse_cfgdata(yaml_loc, cfgdata_loc, path=""):
+        """Parse the dictionary returned by yaml.safe_load into the
+        cfgdata file by recursively parsing each level.
+
+        Args:
+            yaml_loc: Points to the current location in the yaml dict
+            cfgdata_loc: Points to the current location to place the parsed values
+            path: Human-readable path (for error messages)
+        """
+        for key, value in yaml_loc.items():
+            fullpath = path + "/" + key
+
+            if not isinstance(value, dict):
+                raise ValueError("Something went wrong when parsing the configdata file "
+                                 "'{}'. Expected a dictionary at path {}".format(
+                                     cfgdata_file, fullpath))
+            if "_" in key:
+                # This is needed for compatibility with the way the environment
+                # variables are treated as configuration entries
+                raise ValueError("None of the configuration entries in the "
+                                 "configdata.yaml may contain the character '_'. "
+                                 "Violating path: {}".format(fullpath))
+
+            if not key.islower():
+                # Similarly needed for compatibility how we treat environment variables.
+                raise ValueError("Configuration entries need to be lower case only. "
+                                 "Violating path: {}".format(fullpath))
+
+            if "type" in value and "description" in value:
+                # The current location of "yaml" is a configuration entry,
+                # so make a ConfigEntry out of it.
+                cfgdata_loc[key] = ConfigEntry(path=path, **value)
+            else:
+                # Recurse one level deeper
+                parse_cfgdata(value, cfgdata_loc.setdefault(key, dict()),
+                              path=fullpath)
+
+    cfgdata = dict()
+    with open(cfgdata_file, "r") as stream:
+        parse_cfgdata(yaml.safe_load(stream), cfgdata)
+    return cfgdata
+
+
+# Read config data once and cache result
+CONFIG_DATA = read_configdata()
 
 
 def parse_file(path):
