@@ -6,7 +6,8 @@ python:
     - "3.6"
 before_install:
     - pip install -r requirements.txt
-    - pip install pylint
+    - pip install pylint nose2
 script:
     - pylint bin libfulltext
+    - nose2
     - pip install ${TRAVIS_BUILD_DIR}
