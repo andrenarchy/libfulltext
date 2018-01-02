@@ -2,6 +2,7 @@
 """Unit tests for APS"""
 
 from unittest import TestCase
+import requests
 
 from ...response import assert_sha1
 from .aps import get_aps_fulltext
@@ -19,7 +20,7 @@ class GetApsFulltextTest(TestCase):
 
     def test_no_access(self):
         """No access should be detected."""
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(requests.exceptions.HTTPError) as context:
             get_aps_fulltext(
                 '10.1103/PhysRevA.96.063419',
                 lambda stream, filename: None,
@@ -28,6 +29,6 @@ class GetApsFulltextTest(TestCase):
 
     def test_non_existent_doi(self):
         """A non-existing DOI should result in an error"""
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(requests.exceptions.HTTPError) as context:
             get_aps_fulltext('10.1103/non-existent', lambda stream, filename: None)
         self.assertIn('Not Found', str(context.exception))

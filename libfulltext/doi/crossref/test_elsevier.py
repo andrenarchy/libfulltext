@@ -2,6 +2,7 @@
 """Unit tests for Elsevier"""
 
 from unittest import TestCase, skip
+import requests
 
 from ...response import assert_sha1
 from .elsevier import get_elsevier_fulltext
@@ -23,7 +24,7 @@ class GetElsevierFulltextTest(TestCase):
     def test_incomplete_pdf(self):
         """An incomplete PDF (restricted to first page) should be detected.
         The DOI is a non-OA article."""
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(requests.exceptions.HTTPError) as context:
             get_elsevier_fulltext(
                 '10.1016/j.laa.2017.12.020',
                 lambda stream, filename: None,
@@ -33,7 +34,7 @@ class GetElsevierFulltextTest(TestCase):
 
     def test_non_existent_doi(self):
         """A non-existing DOI should result in an error"""
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(requests.exceptions.HTTPError) as context:
             get_elsevier_fulltext(
                 '10.1103/non-existent',
                 lambda stream, filename: None,
