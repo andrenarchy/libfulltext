@@ -13,6 +13,6 @@ setup(name='libfulltext',
       version='1.0.0-alpha.1',
       description='Tools for downloading fulltexts of open access articles',
       url='https://github.com/andrenarchy/libfulltext',
-      install_requires=['PyYAML (>=3)', 'requests (>=2)', "click (=>5)"],
+      install_requires=['PyYAML (>=3)', 'requests (>=2)', "click (>=5)"],
       classifiers=[],
       )
