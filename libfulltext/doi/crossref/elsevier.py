@@ -3,7 +3,7 @@
 
 import requests
 
-from ...utils import verify_response
+from ...response import verify
 
 def get_elsevier_fulltext(doi, save_stream, apikey):
     """Retrieve Elsevier fulltext
@@ -27,7 +27,7 @@ def get_elsevier_fulltext(doi, save_stream, apikey):
         stream=True
         )
 
-    verify_response(response, 'application/pdf')
+    verify(response, 'application/pdf')
 
     # Elsevier sometimes only returns the first page (yep, also for OA content)
     elsevier_status = response.headers['X-ELS-Status']

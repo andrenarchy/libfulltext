@@ -3,7 +3,7 @@
 
 from unittest import TestCase
 
-from ...test.utils import assert_stream
+from ...response import assert_sha1
 from .springer import get_springer_fulltext
 
 class GetSpringerFulltextTest(TestCase):
@@ -14,7 +14,7 @@ class GetSpringerFulltextTest(TestCase):
         """Compare SHA1 and filename"""
         get_springer_fulltext(
             '10.1140/epjc/s10052-016-4338-8',
-            assert_stream('4d188155b7d395356d6f62794f41cc6d083296b0', 'fulltext.pdf')
+            assert_sha1('4d188155b7d395356d6f62794f41cc6d083296b0', 'fulltext.pdf')
             )
 
     def test_no_access(self):

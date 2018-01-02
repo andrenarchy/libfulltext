@@ -3,7 +3,7 @@
 
 from unittest import TestCase, skip
 
-from ...test.utils import assert_stream
+from ...response import assert_sha1
 from .elsevier import get_elsevier_fulltext
 
 class GetElsevierFulltextTest(TestCase):
@@ -16,7 +16,7 @@ class GetElsevierFulltextTest(TestCase):
         """Compare SHA1 and filename"""
         get_elsevier_fulltext(
             '10.1016/j.physletb.2016.07.042',
-            assert_stream('4724fea61643131e32dd4267608f977ffeafb70e', 'fulltext.pdf'),
+            assert_sha1('4724fea61643131e32dd4267608f977ffeafb70e', 'fulltext.pdf'),
             apikey='f7840794d3322d4b56a9cf687aecfccb'
             )
 

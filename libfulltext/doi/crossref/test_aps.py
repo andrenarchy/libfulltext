@@ -3,7 +3,7 @@
 
 from unittest import TestCase
 
-from ...test.utils import assert_stream
+from ...response import assert_sha1
 from .aps import get_aps_fulltext
 
 class GetApsFulltextTest(TestCase):
@@ -14,7 +14,7 @@ class GetApsFulltextTest(TestCase):
         """Compare SHA1 and filename"""
         get_aps_fulltext(
             '10.1103/PhysRevPhysEducRes.13.020141',
-            assert_stream('4a1b37cf8dc7699d01b744a1f6da8fbcba8e3b6d', 'fulltext.pdf')
+            assert_sha1('4a1b37cf8dc7699d01b744a1f6da8fbcba8e3b6d', 'fulltext.pdf')
             )
 
     def test_no_access(self):
