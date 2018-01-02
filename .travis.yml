@@ -11,6 +11,9 @@ install:
   - travis_retry pip install -r requirements.txt
   - travis_retry pip install codecov coverage flake8 nose2 pylint
 
+env:
+    - secure: sqY9sloywmq5gICk6aivgnLkidUq+1xTYMp+tzb3dcizjHO+TQnkKHX6rynv0e3KhMtLTdpdYkibsPgIgLlNi8nTTDR6Sf7CT0g/DUBsTAf7906h4TsBkObu49eUVa+LE/Sx71pAW4Qxf/TlF6F5V7nrFZ7CvX24F2488Yyipz7kOp82MApbkMGGteGz4oPZjn/+qcqk+vhcR8dZOtr9j7FTU4DyGDqsUOmVRYK9VZiWjEPxed+HnYMCGJ8FPEWkjSMfAO0mSH+C3G3gxhzMGgWv8gjYBku7d3TkF9vGbJ3Z1/eoazqX4kOoAhibhG/uJ85EdUJCTniWR1SYIGLp/6BvLBNNkjuzOIlgUZOVFzPbZbUoiQfsXVlfdO/K/chdQ+h78uCe/csvwwR9PG9idlt2TuYg0r2bKp8aVh9uF2YShW1yTmnx5JIlVejI0viSJW0ccZrwPHVLLbfhGoZ5fs50T7rTsf8VceoB6PQC9Lw5GCrPld7BX76fPMl6/EFpxDyJKtc5mI+S4JBbU44D0BAKQRzdRdD0VctWF4y+2+citlFnSG3VzrGG+tNe9saxiATohyvbKKjqXJd91cldm1OvjydoWVQUC/8CcUqzgmCX3lqYf4pQWyRTL1GohGaczQAK1SFWLEszV6w9Ng25ZoZBZs8NHCYobsJ4paMokbM=
+
 script:  # This is the 'test' build stage
   - nose2 --with-coverage --coverage-report xml
   - pip install ${TRAVIS_BUILD_DIR}
