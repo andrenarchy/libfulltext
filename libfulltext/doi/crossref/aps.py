@@ -3,6 +3,7 @@
 
 import requests
 
+from ...utils import verify_response
 
 def get_aps_fulltext(doi, save_stream):
     """Retrieve APS fulltext
@@ -16,6 +17,7 @@ def get_aps_fulltext(doi, save_stream):
         headers={"Accept": "application/pdf"},
         stream=True
         )
-    response.raise_for_status()
+
+    verify_response(response, 'application/pdf')
 
     save_stream(response, 'fulltext.pdf')

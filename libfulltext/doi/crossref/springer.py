@@ -3,6 +3,7 @@
 
 import requests
 
+from ...utils import verify_response
 
 def get_springer_fulltext(doi, save_stream):
     """Retrieve SpringerNature fulltext
@@ -15,6 +16,7 @@ def get_springer_fulltext(doi, save_stream):
         'https://link.springer.com/content/pdf/{0}.pdf'.format(doi),
         stream=True
         )
-    response.raise_for_status()
+
+    verify_response(response, 'application/pdf')
 
     save_stream(response, 'fulltext.pdf')
