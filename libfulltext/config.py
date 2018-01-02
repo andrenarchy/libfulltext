@@ -72,6 +72,32 @@ def read_configdata():
 CONFIG_DATA = read_configdata()
 
 
+def __check_unknown(raw_dict, configdata, path=""):
+    """Check for unknown entries in the raw dictionary"""
+    for key, value in raw_dict.items():
+        fullpath = path + "/" + key
+        if isinstance(value, dict):
+            __check_unknown(raw_dict[key], configdata.get(key, dict()), path=fullpath)
+        if key not in configdata:
+            raise ValueError("Unknown config entry: {}".format(fullpath))
+
+
+def __insert_defaults(raw_dict, configdata, path=""):
+    """
+    Check all required config entries are present in the raw dictionary
+    and insert default values where appropriate.
+    """
+    for key, value in configdata.items():
+        fullpath = path + "/" + key
+        if isinstance(value, dict):
+            __insert_defaults(raw_dict.get(key, dict()), configdata[key], path=fullpath)
+        elif key not in raw_dict:
+            if value.required:
+                raise ValueError("Required config entry {} not present".format(fullpath))
+            else:
+                raw_dict[key] = value.default
+
+
 def parse_file(path):
     """
     Parse a yaml config file and return the raw dictionary
@@ -86,8 +112,15 @@ def parse_file(path):
     if isinstance(path, str):
         with open(path, "r") as file:
             return parse_file(file)
-    else:
-        return yaml.safe_load(path)
+
+    ret = yaml.safe_load(path)
+    try:
+        __check_unknown(ret, CONFIG_DATA)
+        # TODO More checks, e.g. type
+    except (ValueError, TypeError) as exc:
+        raise ValueError("Error when parsing configuration file {}: "
+                         "{}".format(str(path), str(exc)))
+    return ret
 
 
 def parse_env(prefix="LIBFULLTEXT"):
@@ -117,6 +150,13 @@ def parse_env(prefix="LIBFULLTEXT"):
         if key.startswith(prefix):
             # Strip off prefix and insert
             confdict_insert(key[len(prefix) + 1:], value)
+
+    try:
+        __check_unknown(root, CONFIG_DATA)
+        # TODO More checks, e.g. type
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Error when parsing environment variables: "
+                         "{}".format(str(exc)))
     return root
 
 
@@ -161,21 +201,17 @@ def normalise(raw_dict):
         ValueError if the raw dictionary contains invalid values
         TypeError if the raw dictionary contains values of the wrong type
     """
-    # TODO read configdata and check for sanity
-    raw_dict.setdefault("storage", dict())
-    raw_dict["storage"].setdefault("fulltext", os.path.abspath("fulltext"))
+    __check_unknown(raw_dict, CONFIG_DATA)
+    # TODO More checks e.g. Type
+    __insert_defaults(raw_dict, CONFIG_DATA)
     return raw_dict
 
 
-def obtain(paths=["/etc/libfulltext/config.yaml", DEFAULT_CONFIG_PATH],
-           consider_env=True):
+def obtain(path=DEFAULT_CONFIG_PATH, consider_env=True):
     """Parse config file or config stream
 
     Args:
-        paths:          Path to the configuration yaml files
-                        or file streams with the configuration contents.
-                        The files are parsed in this order and newer values
-                        overwrite older ones.
+        path:           Path to the configuration yaml file to use.
         consider_env:   Should the OS environment variables be considered.
 
     Returns:
@@ -186,11 +222,18 @@ def obtain(paths=["/etc/libfulltext/config.yaml", DEFAULT_CONFIG_PATH],
         TypeError if any of the configs contains values of the wrong type
     """
     cfg = dict()
-    for path in paths:
-        if isinstance(path, str) and not os.path.isfile(path):
-            continue  # skip missing files
+
+    if not isinstance(path, str) or os.path.isfile(path):
+        # File is a stream ore exists
         merge_config_into(parse_file(path), cfg)
+
     if consider_env:
         merge_config_into(parse_env(), cfg)
+
+    if not cfg:
+        # No configuration entries found anywhere.
+        raise ValueError("No configuration found. Did you supply a default configuration "
+                         "at {} or set the required environment "
+                         "variables?".format(DEFAULT_CONFIG_PATH))
 
     return normalise(cfg)
