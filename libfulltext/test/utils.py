@@ -1,3 +1,4 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Test utilities"""
 
 import hashlib

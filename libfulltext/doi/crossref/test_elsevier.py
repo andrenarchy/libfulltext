@@ -1,3 +1,4 @@
+# copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Unit tests for Elsevier"""
 
 from unittest import TestCase, skip
