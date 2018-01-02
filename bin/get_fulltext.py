@@ -42,7 +42,7 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file, directory):
     #     SystemExit: incompatible inputs (identifiers from multiple inputs)
 
     # Setup the config dictionary:
-    cfg = libfulltext.config.parse(config)
+    cfg = libfulltext.config.obtain(paths=[config], consider_env=True)
     if directory is not None:
         cfg["storage"]["fulltext"] = directory
 

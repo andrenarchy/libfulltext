@@ -8,7 +8,7 @@ import yaml
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/libfulltext/config.yaml")
 
 
-def parse_file(path=DEFAULT_CONFIG_PATH):
+def parse_file(path):
     """
     Parse a yaml config file and return the raw dictionary
     of configuration options generated from it.
@@ -21,7 +21,7 @@ def parse_file(path=DEFAULT_CONFIG_PATH):
     """
     if isinstance(path, str):
         with open(path, "r") as file:
-            return parse(file)
+            return parse_file(file)
     else:
         return yaml.safe_load(path)
 
@@ -103,15 +103,30 @@ def normalise(raw_dict):
     return raw_dict
 
 
-def parse(path=DEFAULT_CONFIG_PATH):
+def obtain(paths=["/etc/libfulltext/config.yaml", DEFAULT_CONFIG_PATH],
+           consider_env=True):
     """Parse config file or config stream
 
     Args:
-        path:       Path to the configuration yaml file
-                    or file stream with its content.
+        paths:          Path to the configuration yaml files
+                        or file streams with the configuration contents.
+                        The files are parsed in this order and newer values
+                        overwrite older ones.
+        consider_env:   Should the OS environment variables be considered.
+
     Returns:
         parsed configuration dictionary
+
+    Raises:
+        ValueError if any of the configs contains invalid values
+        TypeError if any of the configs contains values of the wrong type
     """
-    cfg = parse_file(path)
-    merge_config_into(parse_env(), cfg)
+    cfg = dict()
+    for path in paths:
+        if isinstance(path, str) and not os.path.isfile(path):
+            continue  # skip missing files
+        merge_config_into(parse_file(path), cfg)
+    if consider_env:
+        merge_config_into(parse_env(), cfg)
+
     return normalise(cfg)
