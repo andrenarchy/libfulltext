@@ -33,7 +33,7 @@ def get_crossref_fulltext(doi, save_stream, config):
         return get_aps_fulltext(doi, save_stream)
     elif crossref_member == '78':
         return get_elsevier_fulltext(doi, save_stream,
-                                     apikey=config['publishers']['elsevier']['apikey'])
+                                     apikey=config['publishers_elsevier_apikey'])
     elif crossref_member == '297':
         return get_springer_fulltext(doi, save_stream)
 

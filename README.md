@@ -22,9 +22,7 @@ Before starting to use `libfulltext`, you therefore need to
 place at least the following minimal configuration into
 the file `~/.config/libfulltext/config.yaml`:
 ```yaml
-publishers:
-  elsevier:
-    apikey: "your_elsevier_api_key_here"
+publishers_elsevier_apikey: "your_elsevier_api_key_here"
 ```
 For a more complete guide to the configuration file,
 see [doc/config.md](doc/config.md).

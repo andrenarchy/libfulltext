@@ -44,7 +44,7 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file, directory):
 
     # Setup the config dictionary:
 
-    cfg = libfulltext.config.obtain(path=config, consider_env=True)
+    cfg = libfulltext.config.obtain(path=config, environment=True)
     if directory is not None:
         cfg["storage"]["fulltext"] = directory
 

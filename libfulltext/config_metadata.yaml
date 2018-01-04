@@ -1,12 +1,9 @@
-storage:
-  fulltext:
-    type: Directory
-    default: "./fulltext"
-    description: "Fulltext document root storage directory"
+storage_fulltext:
+  type: Directory
+  default: "./fulltext"
+  description: "Fulltext document root storage directory"
 
-publishers:
-  elsevier:
-    apikey:
-      type: String
-      required: True
-      description: "Elsevier API key."
+publishers_elsevier_apikey:
+  type: String
+  required: True
+  description: "Elsevier API key."
