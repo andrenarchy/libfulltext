@@ -2,8 +2,8 @@
 """SpringerNature publisher module"""
 
 import requests
-
 from ...response import verify
+
 
 def get_springer_fulltext(doi, save_stream):
     """Retrieve SpringerNature fulltext
@@ -15,8 +15,7 @@ def get_springer_fulltext(doi, save_stream):
     response = requests.get(
         'https://link.springer.com/content/pdf/{0}.pdf'.format(doi),
         stream=True
-        )
+    )
 
     verify(response, 'application/pdf')
-
     save_stream(response, 'fulltext.pdf')

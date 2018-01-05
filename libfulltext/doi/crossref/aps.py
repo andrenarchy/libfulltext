@@ -2,8 +2,8 @@
 """American Physical Society publisher module"""
 
 import requests
-
 from ...response import verify
+
 
 def get_aps_fulltext(doi, save_stream):
     """Retrieve APS fulltext
@@ -16,8 +16,7 @@ def get_aps_fulltext(doi, save_stream):
         'http://harvest.aps.org/v2/journals/articles/{0}'.format(doi),
         headers={"Accept": "application/pdf"},
         stream=True
-        )
+    )
 
     verify(response, 'application/pdf')
-
     save_stream(response, 'fulltext.pdf')

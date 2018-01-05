@@ -2,8 +2,8 @@
 """Elsevier publisher module"""
 
 import requests
-
 from ...response import verify
+
 
 def get_elsevier_fulltext(doi, save_stream, apikey):
     """Retrieve Elsevier fulltext
@@ -25,7 +25,7 @@ def get_elsevier_fulltext(doi, save_stream, apikey):
         'https://api.elsevier.com/content/article/doi/' + doi,
         params=params,
         stream=True
-        )
+    )
 
     verify(response, 'application/pdf')
 
@@ -35,6 +35,6 @@ def get_elsevier_fulltext(doi, save_stream, apikey):
         raise requests.exceptions.HTTPError(
             'X-ELS-Status indicates that request was not successful: {0}'
             .format(elsevier_status)
-            )
+        )
 
     save_stream(response, 'fulltext.pdf')

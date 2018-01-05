@@ -17,7 +17,6 @@ def assert_sha1(expected_sha1, expected_path):
         (basename where the stream should usually be saved). This function
         matches the interface of save_stream.
     """
-
     def process_response(response, path):
         """Process a response and verify SHA1 hash and path
 
