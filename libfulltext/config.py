@@ -156,7 +156,7 @@ def normalise(cfg):
         elif not entry.required:
             cfg[key] = entry.default
         else:
-            raise ConfigurationError("Configuration entry {} is required but was not "
+            raise ConfigurationError("Configuration entry '{}' is required but was not "
                                      "found. Did you supply it via the configuration "
                                      "file or the environment variables?".format(key))
     return cfg
