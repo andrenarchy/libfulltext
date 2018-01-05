@@ -22,6 +22,10 @@ ConfigEntry = collections.namedtuple("ConfigEntry",
 ConfigEntry.__new__.__defaults__ = (None, False)
 
 
+class ConfigurationError(Exception):
+    """Error which is thrown whenever parsing the user configuration failed."""
+
+
 @functools.lru_cache()
 def read_metadata():
     """
@@ -41,8 +45,8 @@ def read_metadata():
         cfgmeta_raw = yaml.safe_load(stream)
 
     cfgmeta = dict()
-    for key, value in cfgmeta_raw.items():
-        if not isinstance(value, dict):
+    for key, entry in cfgmeta_raw.items():
+        if not isinstance(entry, dict):
             raise ValueError("Something went wrong when parsing the config metadata "
                              "file '{}'. Expected a dictionary behind entry {}".format(
                                  cfgmeta_file, key))
@@ -52,14 +56,14 @@ def read_metadata():
             raise ValueError("Configuration entries need to be lower case only. "
                              "Violating entry {} in file {}".format(cfgmeta_file, key))
 
-        if "type" not in value or "description" not in value:
+        if "type" not in entry or "description" not in entry:
             raise ValueError("The keys 'type' and 'description' are required in each "
                              "entry in the config metadata file, but are missing from "
                              "entry {} in {}".format(cfgmeta_file, key))
 
         # TODO Perhaps the default value needs to be parsed here!
 
-        cfgmeta[key] = ConfigEntry(**value)
+        cfgmeta[key] = ConfigEntry(**entry)
     return cfgmeta
 
 
@@ -83,9 +87,9 @@ def parse_file(path):
 
     for key in root:
         if key not in cfgmeta:
-            raise ValueError("Error when parsing configuration file {}: "
-                             "Unknown configuration entry '{}'".format(
-                                 str(path), key))
+            raise ConfigurationError("Error when parsing configuration file {}: "
+                                     "Unknown configuration entry '{}'".format(
+                                         str(path), key))
         # TODO More checks, e.g. type
     return root
 
@@ -108,8 +112,8 @@ def parse_environment():
 
         key = var[len(ENVIRONMENT_VARIABLES_PREFIX) + 1:].lower()
         if key not in cfgmeta:
-            raise ValueError("Cannot associate environment variable '{}' with any "
-                             "configuration entry.".format(var))
+            raise ConfigurationError("Cannot associate environment variable '{}' with "
+                                     "any configuration entry.".format(var))
 
         # TODO parse according to type
         root[key] = value
@@ -143,9 +147,9 @@ def normalise(cfg):
         elif not entry.required:
             cfg[key] = entry.default
         else:
-            raise ValueError("Configuration entry {} is required but was not found. "
-                             "Did you supply it via the configuration file or the "
-                             "environment variables?".format(key))
+            raise ConfigurationError("Configuration entry {} is required but was not "
+                                     "found. Did you supply it via the configuration "
+                                     "file or the environment variables?".format(key))
     return cfg
 
 
@@ -171,8 +175,9 @@ def obtain(path=DEFAULT_CONFIG_PATH, environment=True):
         cfg.update(parse_environment())
 
     if not cfg:
-        raise ValueError("No configuration found. Did you supply a default configuration "
-                         "at {} or set the required environment "
-                         "variables?".format(DEFAULT_CONFIG_PATH))
+        raise ConfigurationError("No configuration found. Did you supply a default "
+                                 "configuration at '{}' or set the required environment "
+                                 "variables? If unsure check the documentation."
+                                 "".format(DEFAULT_CONFIG_PATH))
 
     return normalise(cfg)
