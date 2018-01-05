@@ -26,7 +26,9 @@ jobs:
   include:
     - stage: code style
       script: pylint bin libfulltext
+      env: CODE_STYLE="pylint"
     - script: flake8
+      env: CODE_STYLE="flake8"
     #
     - stage: deploy
       # TODO deploy to pip
