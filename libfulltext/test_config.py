@@ -4,7 +4,35 @@
 import io
 import os
 from unittest import TestCase, skip
+import yaml
 from . import config
+
+
+class MinimalConfiguration:
+    """
+    Class which defines properties to quickly generate
+    a minimal working configuration for testing.
+
+    This class needs to be adapted whenever new configuration
+    entries are added to configdata.yaml, which are marked as required.
+    """
+    @property
+    def minimal_configuration(self):
+        """Return the minimal dummy configuration as a dict"""
+        return {
+            "publishers_elsevier_apikey": "01234567890123456789012345678901",
+        }
+
+    @property
+    def minimal_configfile(self):
+        """Return the minimal dummy configuration as a parsable stream"""
+        return io.StringIO(yaml.safe_dump(self.minimal_configuration))
+
+    @property
+    def minimal_environment(self):
+        """Return the minimal dummy configuration as an OS environment"""
+        return {"LIBFULLTEXT_" + key.upper(): value
+                for key, value in self.minimal_configuration.items()}
 
 
 class EnvironmentVariables:
@@ -127,3 +155,38 @@ class ConfigTestParseEnvironment(TestCase):
         }
         with EnvironmentVariables(env_vars):
             self.assertDictEqual(config.parse_environment(), expected)
+
+
+class ConfigTestNormalise(TestCase, MinimalConfiguration):
+    """
+    Test the config.normalise function
+    """
+    def test_complete_config_passes(self):
+        """
+        Test whethere a complete config passes without problems.
+        If this test fails it could indicate that the
+        MinimalConfiguration class has not been updated.
+        """
+        config.normalise(self.minimal_configuration)
+
+    def test_detect_missing_required(self):
+        """Test that it is detected if some required values are missing"""
+        deleted = "publishers_elsevier_apikey"
+
+        # Take complete configuration and remove a key
+        raw = self.minimal_configuration.copy()
+        del raw[deleted]
+
+        with self.assertRaises(config.ConfigurationError) as ctx:
+            config.normalise(raw)
+        self.assertIn("Configuration entry '" + deleted + "' is required but "
+                      "was not found.", str(ctx.exception))
+
+    def test_insert_default(self):
+        """Test that all default values are inserted"""
+        ret = config.normalise(self.minimal_configuration)
+
+        for key, entry in config.read_metadata().items():
+            self.assertIn(key, ret)
+            if not entry.required:
+                self.assertEqual(entry.default, ret[key])
