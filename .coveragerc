@@ -1,0 +1,11 @@
+[run]
+source =
+    bin
+    libfulltext
+branch = True
+
+[report]
+show_missing = True
+omit =
+    doc/*
+    setup.py
