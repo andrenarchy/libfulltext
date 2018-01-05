@@ -4,7 +4,7 @@
 from unittest import TestCase, skip
 import requests
 
-from ...config import parse_environment
+from ... import config
 from ...response import assert_sha1
 from .elsevier import get_elsevier_fulltext
 
@@ -13,7 +13,7 @@ class GetElsevierFulltextTest(TestCase):
     """Test get_elsevier_fulltext"""
 
     # The elsevier API key from the environment
-    apikey = parse_environment()["publishers_elsevier_apikey"]
+    apikey = config.obtain()["publishers_elsevier_apikey"]
 
     @skip('Elsevier API currently does not return full texts but only page 1 '
           '(re-enable with a working API key)')
