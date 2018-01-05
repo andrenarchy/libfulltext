@@ -163,18 +163,18 @@ class ConfigTestNormalise(TestCase, MinimalConfiguration):
     """
     def test_complete_config_passes(self):
         """
-        Test whethere a complete config passes without problems.
+        Test whether a complete config passes without problems.
         If this test fails it could indicate that the
         MinimalConfiguration class has not been updated.
         """
         config.normalise(self.minimal_configuration)
 
     def test_detect_missing_required(self):
-        """Test that it is detected if some required values are missing"""
+        """Missing required values should cause an error"""
         deleted = "publishers_elsevier_apikey"
 
         # Take complete configuration and remove a key
-        raw = self.minimal_configuration.copy()
+        raw = self.minimal_configuration
         del raw[deleted]
 
         with self.assertRaises(config.ConfigurationError) as ctx:
@@ -183,10 +183,50 @@ class ConfigTestNormalise(TestCase, MinimalConfiguration):
                       "was not found.", str(ctx.exception))
 
     def test_insert_default(self):
-        """Test that all default values are inserted"""
+        """All default values should be inserted after the call"""
         ret = config.normalise(self.minimal_configuration)
 
         for key, entry in config.read_metadata().items():
             self.assertIn(key, ret)
             if not entry.required:
                 self.assertEqual(entry.default, ret[key])
+
+
+class ContigTestObtain(TestCase, MinimalConfiguration):
+    """
+    Test the config.obtain function
+    """
+    def test_non_existing_file(self):
+        """
+        The obtain function should skip over non-existent files
+        silently (if the requirements regarding the minimial
+        configuration are met by the environment variables.)
+        """
+        with EnvironmentVariables(self.minimal_environment):
+            ret = config.obtain("/nonexistent", environment=True)
+        self.assertDictContainsSubset(self.minimal_configuration, ret)
+
+    def test_with_environment(self):
+        """A key from the config should get overwritten by the environment"""
+        key = "publishers_elsevier_apikey"
+        env_vars = {"LIBFULLTEXT_PUBLISHERS_ELSEVIER_APIKEY":  "42"}
+        with EnvironmentVariables(env_vars):
+            ret = config.obtain(self.minimal_configfile, environment=True)
+        self.assertEqual("42", ret[key])
+
+    def test_without_environment(self):
+        """The environment=False setting should let us ignore the environment"""
+        key = "publishers_elsevier_apikey"
+        env_vars = {"LIBFULLTEXT_PUBLISHERS_ELSEVIER_APIKEY":  "42"}
+        with EnvironmentVariables(env_vars):
+            ret = config.obtain(self.minimal_configfile, environment=False)
+        self.assertEqual(self.minimal_configuration[key], ret[key])
+
+    def test_empty_contig(self):
+        """A fully empty config should raise an error"""
+
+        with self.assertRaises(config.ConfigurationError) as ctx:
+            with EnvironmentVariables(dict()):
+                empty = io.StringIO("")
+                config.obtain(empty, environment=True)
+        self.assertIn("No configuration found.", str(ctx.exception))
