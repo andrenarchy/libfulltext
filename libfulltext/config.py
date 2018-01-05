@@ -85,12 +85,21 @@ def parse_file(path):
     cfgmeta = read_metadata()
     root = yaml.safe_load(path)
 
+    # Normalise empty configuration file
+    if not root:
+        return {}
+
+    if not isinstance(root, dict):
+        raise ConfigurationError("Error when parsing configuration file {}: "
+                                 "Expected top-level datastructure to be a dictionary"
+                                 .format(str(path)))
+
     for key in root:
         if key not in cfgmeta:
             raise ConfigurationError("Error when parsing configuration file {}: "
                                      "Unknown configuration entry '{}'".format(
                                          str(path), key))
-        # TODO More checks, e.g. type
+        # TODO More checks and normalisation, e.g. type
     return root
 
 
