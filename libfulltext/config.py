@@ -1,7 +1,6 @@
 # copyright © 2017 the libfulltext authors (see AUTHORS.md and LICENSE)
 """Config handling module"""
 
-import collections
 import functools
 import os
 import yaml
@@ -12,18 +11,76 @@ DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/libfulltext/config.yaml")
 # The prefix to use for the environment variables we care about.
 ENVIRONMENT_VARIABLES_PREFIX = "LIBFULLTEXT"
 
-# Named tuple for the parsed entries of config_metadata.yaml
-# type: Type of the entry
-# description: Description of the entry
-# default: Default value for this entry
-# required: Is this entry required
-ConfigEntry = collections.namedtuple("ConfigEntry",
-                                     ["type", "description", "default", "required"])
-ConfigEntry.__new__.__defaults__ = (None, False)
-
 
 class ConfigurationError(Exception):
     """Error which is thrown whenever parsing the user configuration failed."""
+
+
+class EntryParsers:
+    """
+    This class contains the library of configuration entry parsers.
+
+    The parsers follow the following conveniton:
+        - They are named exactly like the type into which they parse
+        - They get either a single argument, namely the value to parse,
+          or none at all. In the latter case they should return a sensible
+          'default'.
+        - If parsing cannot be done, they should throw a ConfigurationError.
+        - The parsers should be idempotent, i.e. running them twice should
+          return the same result as running them once, i.e.
+          `parser(parser(value)) = parser(value)`
+    """
+    @staticmethod
+    def string(value=""):
+        """Convert a raw configuration entry value into a string"""
+        return str(value)
+
+    @staticmethod
+    def directory(value=""):
+        """Convert a raw configuration entry value into a directory path"""
+        if not isinstance(value, str):
+            raise ConfigurationError("Directory entry needs to be a string")
+        elif not os.path.isabs(value):
+            return os.path.abspath(os.path.expanduser(value))
+        else:
+            return value
+
+    # add more entry types by adding a parser here ...
+
+
+class ConfigEntry:
+    # pylint: disable=too-few-public-methods
+    """Class for a parsed configuration entry from config_metadata.yaml."""
+
+    def __init__(self, type, description, default=None, required=False):
+        # pylint: disable=redefined-builtin
+        """
+        Initialise a ConfigEntry class
+
+        Args:
+            type:          Type of the entry
+            description:   A few lines of description
+            default:       Default value
+            required:      Is this entry required?
+
+        Raises:
+            ConfigurationError    if type is an unknown entry type.
+        """
+        self.type = type
+        self.description = description
+        self.required = required
+
+        try:
+            self.parser = getattr(EntryParsers, self.type)
+        except AttributeError:
+            raise ConfigurationError("Invalid configuration entry type {}: "
+                                     "Type converter not found.".format(self.type))
+
+        # Use supplied default or the default from the parser.
+        if default is None:
+            self.default = self.parser()
+        else:
+            self.default = self.parser(default)
 
 
 @functools.lru_cache()
@@ -38,6 +95,9 @@ def read_metadata():
 
     Returns:
         dictionary of ConfigEntry objects.
+
+    Raises:
+        ValueError   If something goes wrong when parsing the metadata file.
     """
     cfgmeta_file = os.path.join(os.path.dirname(__file__), "config_metadata.yaml")
 
@@ -60,9 +120,6 @@ def read_metadata():
             raise ValueError("The keys 'type' and 'description' are required in each "
                              "entry in the config metadata file, but are missing from "
                              "entry {} in {}".format(cfgmeta_file, key))
-
-        # TODO Perhaps the default value needs to be parsed here!
-
         cfgmeta[key] = ConfigEntry(**entry)
     return cfgmeta
 
@@ -77,6 +134,10 @@ def parse_file(path):
                     or file stream with its content.
     Returns:
         raw parsed configuration dictionary
+
+    Raises:
+        ConfigurationError    if an unknown configuration entry occurrs or
+                              the value of an configuration entry is not understood.
     """
     if isinstance(path, str):
         with open(path, "r") as file:
@@ -99,7 +160,8 @@ def parse_file(path):
             raise ConfigurationError("Error when parsing configuration file {}: "
                                      "Unknown configuration entry '{}'".format(
                                          str(path), key))
-        # TODO More checks and normalisation, e.g. type
+        else:
+            root[key] = cfgmeta[key].parser(root[key])
     return root
 
 
@@ -110,6 +172,10 @@ def parse_environment():
 
     Returns:
         raw parsed configuration dictionary
+
+    Raises:
+        ConfigurationError    if an unknown environment variable occurrs or
+                              the value of an environment variable is not understood.
     """
     cfgmeta = read_metadata()
 
@@ -123,9 +189,8 @@ def parse_environment():
         if key not in cfgmeta:
             raise ConfigurationError("Cannot associate environment variable '{}' with "
                                      "any configuration entry.".format(var))
-
-        # TODO parse according to type
-        root[key] = value
+        else:
+            root[key] = cfgmeta[key].parser(value)
     return root
 
 
@@ -146,13 +211,13 @@ def normalise(cfg):
         parsed configuration dictionary
 
     Raises:
-        ValueError if the raw dictionary contains invalid values
-        TypeError if the raw dictionary contains values of the wrong type
+        ConfigurationError    If a required configuration entry is missing
+                              or if the value of an existing entry is invalid
     """
     cfgmeta = read_metadata()
     for key, entry in cfgmeta.items():
         if key in cfg:
-            pass  # TODO More checks, e.g. type
+            cfg[key] = entry.parser(cfg[key])
         elif not entry.required:
             cfg[key] = entry.default
         else:
@@ -173,8 +238,7 @@ def obtain(path=DEFAULT_CONFIG_PATH, environment=True):
         parsed configuration dictionary
 
     Raises:
-        ValueError if any of the configs contains invalid values
-        TypeError if any of the configs contains values of the wrong type
+        ConfigurationError    If something went wrong when parsing the configuration
     """
     cfg = dict()
     if not isinstance(path, str) or os.path.isfile(path):
@@ -188,5 +252,4 @@ def obtain(path=DEFAULT_CONFIG_PATH, environment=True):
                                  "configuration at '{}' or set the required environment "
                                  "variables? If unsure check the documentation."
                                  "".format(DEFAULT_CONFIG_PATH))
-
     return normalise(cfg)

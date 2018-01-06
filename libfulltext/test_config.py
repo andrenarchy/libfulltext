@@ -3,7 +3,7 @@
 
 import io
 import os
-from unittest import TestCase, skip
+from unittest import TestCase
 import yaml
 from . import config
 
@@ -49,6 +49,50 @@ class EnvironmentVariables:
         os.environ = self.orig_environ
 
 
+class ConfigTestEntryParsers(TestCase):
+    """Tests the entry parsers"""
+
+    #
+    # string parser
+    #
+    def test_string_empty(self):
+        """Test that the default is an empty string"""
+        self.assertEqual(config.EntryParsers.string(), "")
+
+    def test_string_string(self):
+        """Parsing a string with string changes nothing"""
+        self.assertEqual(config.EntryParsers.string("abc"), "abc")
+
+    def test_string_int(self):
+        """Parse an int with string"""
+        self.assertEqual(config.EntryParsers.string(5), "5")
+        self.assertEqual(config.EntryParsers.string(config.EntryParsers.string(5)), "5")
+
+    #
+    # directory parser
+    #
+    def test_directory_empty(self):
+        """The default of directory should be the pwd"""
+        self.assertEqual(config.EntryParsers.directory(), os.getcwd())
+
+    def test_directory_relative(self):
+        """Test if a plain string gives a relative directory"""
+        directory = "testDIRR"
+        expect = os.path.join(os.getcwd(), directory)
+        self.assertEqual(config.EntryParsers.directory(directory), expect)
+
+    def test_directory_absolute(self):
+        """Test if an absolute path gives the same directory back"""
+        directory = "/testDIRR"
+        self.assertEqual(config.EntryParsers.directory(directory), directory)
+
+    def test_directory_tilde(self):
+        """Test if tilde expansion works"""
+        directory = "~/test"
+        expect = os.path.join(os.environ["HOME"], "test")
+        self.assertEqual(config.EntryParsers.directory(directory), expect)
+
+
 class ConfigTestParseFile(TestCase):
     """Tests the config.parse_file function"""
 
@@ -87,7 +131,6 @@ class ConfigTestParseFile(TestCase):
         cfg = io.StringIO(cfg)
         self.assertDictEqual(config.parse_file(cfg), expected)
 
-    @skip("Currently the required functionality for this is not available.")
     def test_working_2(self):
         """Test a second example of a working configuration"""
         cfg = """
@@ -144,7 +187,6 @@ class ConfigTestParseEnvironment(TestCase):
         with EnvironmentVariables(env_vars):
             self.assertDictEqual(config.parse_environment(), expected)
 
-    @skip("Currently the required functionality for this is not available.")
     def test_working_2(self):
         """Test a second example of a working configuration"""
         env_vars = self.base_environment
