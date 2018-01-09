@@ -60,7 +60,7 @@ def verify(response, expected_content_type):
 
     if 'Content-Type' not in response.headers or \
             response.headers['Content-Type'] != expected_content_type:
-        raise requests.exceptions.InvalidHeader('Content-Type is not ',
-                                                expected_content_type, ', ',
+        raise requests.exceptions.InvalidHeader('Content-Type is not ' +
+                                                expected_content_type + ', '
                                                 'possibly because you do not have access '
                                                 'to this document.')
