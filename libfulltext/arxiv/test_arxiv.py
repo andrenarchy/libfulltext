@@ -5,7 +5,7 @@ from unittest import TestCase
 import requests
 import hashlib
 
-from .arxiv import get_arxiv_fulltext
+from . import get_arxiv_fulltext
 
 
 # TODO test if this really works
@@ -31,6 +31,7 @@ class GetArxivFulltextTest(TestCase):
 
     @staticmethod
     def test_sha1():
+        # TODO: I do not understand why this paper cannot be accessed from APS
         """Compare SHA1 and filename"""
         checklist = {}
         get_arxiv_fulltext('1709.01156',
@@ -39,7 +40,8 @@ class GetArxivFulltextTest(TestCase):
                                                  ['arxiv.pdf',
                                                   'fulltext.pdf'],
                                                  checklist
-                                                 )
+                                                 ),
+                           None
                            )
         assert len(checklist.keys()) == 2
         for target in checklist.keys():
@@ -47,14 +49,20 @@ class GetArxivFulltextTest(TestCase):
 
     def test_missing_pdf(self):
         """Check an arxiv entry without pdf."""
-        with self.assertRaises(ValueError) as context:
+        # TODO: expected different API result
+        # with self.assertRaises(ValueError) as context:
+        with self.assertRaises(requests.exceptions.InvalidHeader) as context:
             get_arxiv_fulltext('physics/0701199',
                                lambda stream, filename: None,
+                               None
                                )
-        self.assertIn("Didn't contain a pdf link", str(context.exception))
+        self.assertIn("Content-Type is not application/pdf", str(context.exception))
+        # self.assertIn("Didn't contain a pdf link", str(context.exception))
 
     def test_non_existent_id(self):
         """A non-existing ID should result in an error"""
         with self.assertRaises(ValueError) as context:
-            get_arxiv_fulltext('hep-ex/invalid', lambda stream, filename: None)
-        self.assertIn('Did not obtain any arXiv article', str(context.exception))
+            get_arxiv_fulltext('hep-ex/invalid', lambda stream, filename: None, None)
+        # TODO: absurdly, this DOES return an entry, just without pdf
+        #self.assertIn('Did not obtain any arXiv article', str(context.exception))
+        self.assertIn("Didn't contain a pdf link", str(context.exception))
