@@ -14,8 +14,8 @@ def assert_sha1(expected_sha1, expected_path):
 
     Returns:
         A function that takes a stream (from a response) and a string
-        (basename where the stream should usually be saved). To match the
-        interface of save_stream
+        (basename where the stream should usually be saved). This function
+        matches the interface of save_stream.
     """
 
     def process_response(response, path):
