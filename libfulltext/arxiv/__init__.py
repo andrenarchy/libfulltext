@@ -4,7 +4,7 @@
 import requests
 from lxml import etree
 
-from ...response import verify
+from ..response import verify
 from ..doi import get_doi_fulltext
 
 
