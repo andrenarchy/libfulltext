@@ -39,23 +39,24 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
     # '{*}' = ignore the namespace (usually "http://www.w3.org/2005/Atom")
     entries = tree.findall("./{*}entry")
 
-    if len(entries) == 1:
-        entry = entries[0]
-    else:
-        if len(entries) > 1:
-            raise ValueError("Obtained more than one arXiv article")
-        else:
-            raise ValueError("Did not obtain any arXiv article")
+    if len(entries) > 1:
+        raise ValueError("Obtained more than one arXiv article")
+    elif len(entries) == 0:
+        raise ValueError("Did not obtain any arXiv article")
 
-    pdf_link = None
+    entry = entries[0]
+
+    pdf_links = []
     for element in entry.findall("./{*}link"):
         if 'title' in element.keys() and element.get("title") == "pdf":
-            pdf_link = element.get("href")
+            pdf_links.append(element.get("href"))
 
-    if pdf_link is None:
+    if len(pdf_links) == 0:
         raise ValueError("Didn't contain a pdf link")
+    elif len(pdf_links) > 1:
+        raise ValueError("Ambiguous pdf links")
 
-    response = requests.get(pdf_link,
+    response = requests.get(pdf_links[0],
                             stream=True
                             )
 
