@@ -13,7 +13,7 @@ def assert_sha1(expected_sha1, expected_path):
         expected_path: expected basename of the downloaded file
 
     Returns:
-        A function that takes as stream (from a response) and a string
+        A function that takes a stream (from a response) and a string
         (basename where the stream should usually be saved). To match the
         interface of save_stream
     """
