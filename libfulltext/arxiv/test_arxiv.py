@@ -2,9 +2,9 @@
 """Unit tests for arXiv"""
 
 from unittest import TestCase
-import requests
 import hashlib
 from collections import Counter
+import requests
 
 from . import get_arxiv_fulltext
 

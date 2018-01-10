@@ -41,7 +41,7 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
 
     if len(entries) > 1:
         raise ValueError("Obtained more than one arXiv article")
-    elif len(entries) == 0:
+    elif not entries:
         raise ValueError("Did not obtain any arXiv article")
 
     entry = entries[0]
@@ -51,7 +51,7 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
         if 'title' in element.keys() and element.get("title") == "pdf":
             pdf_links.append(element.get("href"))
 
-    if len(pdf_links) == 0:
+    if not pdf_links:
         raise ValueError("Didn't contain a pdf link")
     elif len(pdf_links) > 1:
         raise ValueError("Ambiguous pdf links")
