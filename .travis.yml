@@ -9,16 +9,14 @@ python:
 
 install:
   - travis_retry pip install -r requirements.txt
-  - travis_retry pip install nose2 pylint flake8
+  - travis_retry pip install codecov coverage flake8 nose2 pylint
 
 script:  # This is the 'test' build stage
-  - nose2 --with-coverage
-    # Fail if coverage below threshold
-  - python3 -m coverage report --fail-under=55 > /dev/null
+  - nose2 --with-coverage --coverage-report xml
   - pip install ${TRAVIS_BUILD_DIR}
 
 after_success:
-  - echo Success  # TODO upload coverage
+  - codecov
 
 # These jobs are only run with the first python version
 # mentioned in the initial list.
