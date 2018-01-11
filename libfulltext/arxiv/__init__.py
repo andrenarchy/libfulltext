@@ -5,7 +5,6 @@ import requests
 from lxml import etree
 
 from ..response import verify
-from ..doi import get_doi_fulltext
 
 
 def get_arxiv_fulltext(arxiv_id, save_stream, config):
@@ -46,6 +45,8 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
 
     entry = entries[0]
 
+    # the document's DOI is at `doi = entry.findall("./{*}doi")[0].text`
+
     pdf_links = []
     for element in entry.findall("./{*}link"):
         if 'title' in element.keys() and element.get("title") == "pdf":
@@ -58,16 +59,8 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
 
     response = requests.get(pdf_links[0],
                             stream=True
-                            )
+                           )
 
     verify(response, 'application/pdf')
 
     save_stream(response, 'arxiv.pdf')
-
-    try:
-        doi = entry.findall("./{*}doi")[0].text
-    except KeyError:
-        # no associated DOI
-        pass
-    else:
-        get_doi_fulltext(doi, save_stream, config)

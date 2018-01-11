@@ -4,9 +4,11 @@
 import os
 
 from .doi import get_doi_fulltext
+from .arxiv import get_arxiv_fulltext
 
 PREFIX_FULLTEXT_GETTER = {
     'doi': get_doi_fulltext,
+    'arXiv': get_arxiv_fulltext,
 }
 
 
