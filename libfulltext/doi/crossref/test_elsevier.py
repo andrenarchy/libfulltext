@@ -7,6 +7,7 @@ import requests
 from ...response import assert_sha1
 from .elsevier import get_elsevier_fulltext
 
+
 class GetElsevierFulltextTest(TestCase):
     """Test get_elsevier_fulltext"""
 
@@ -19,7 +20,7 @@ class GetElsevierFulltextTest(TestCase):
             '10.1016/j.physletb.2016.07.042',
             assert_sha1('4724fea61643131e32dd4267608f977ffeafb70e', 'fulltext.pdf'),
             apikey='f7840794d3322d4b56a9cf687aecfccb'
-            )
+        )
 
     def test_incomplete_pdf(self):
         """An incomplete PDF (restricted to first page) should be detected.
@@ -29,7 +30,7 @@ class GetElsevierFulltextTest(TestCase):
                 '10.1016/j.laa.2017.12.020',
                 lambda stream, filename: None,
                 apikey='f7840794d3322d4b56a9cf687aecfccb'
-                )
+            )
         self.assertIn('Response limited to first page', str(context.exception))
 
     def test_non_existent_doi(self):
@@ -39,5 +40,5 @@ class GetElsevierFulltextTest(TestCase):
                 '10.1103/non-existent',
                 lambda stream, filename: None,
                 apikey='f7840794d3322d4b56a9cf687aecfccb'
-                )
+            )
         self.assertIn('Not Found', str(context.exception))
