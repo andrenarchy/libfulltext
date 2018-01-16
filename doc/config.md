@@ -11,13 +11,10 @@ allthough this might be changed by appropriate commandline flags.
 
 ## Full configuration file skeleton
 ```yaml
-storage:
-  # Fulltext document root storage directory
-  # (default: "./fulltext")
-  fulltext: "relative_path_to_directory"
+# Fulltext document root storage directory
+# (default: "./fulltext")
+storage_fulltext: "relative_path_to_directory"
 
-publishers:
-  elsevier:
-    # Elsevier API key (required)
-    apikey: "your_elsevier_api_key_here"
+# Elsevier API key (required)
+publishers_elsevier_apikey: "your_elsevier_api_key_here"
 ```

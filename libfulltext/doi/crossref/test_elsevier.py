@@ -4,12 +4,16 @@
 from unittest import TestCase, skip
 import requests
 
+from ... import config
 from ...response import assert_sha1
 from .elsevier import get_elsevier_fulltext
 
 
 class GetElsevierFulltextTest(TestCase):
     """Test get_elsevier_fulltext"""
+
+    # The elsevier API key from the environment
+    apikey = config.obtain()["publishers_elsevier_apikey"]
 
     @skip('Elsevier API currently does not return full texts but only page 1 '
           '(re-enable with a working API key)')
@@ -19,7 +23,7 @@ class GetElsevierFulltextTest(TestCase):
         get_elsevier_fulltext(
             '10.1016/j.physletb.2016.07.042',
             assert_sha1('4724fea61643131e32dd4267608f977ffeafb70e', 'fulltext.pdf'),
-            apikey='f7840794d3322d4b56a9cf687aecfccb'
+            apikey=GetElsevierFulltextTest.apikey
         )
 
     def test_incomplete_pdf(self):
@@ -29,7 +33,7 @@ class GetElsevierFulltextTest(TestCase):
             get_elsevier_fulltext(
                 '10.1016/j.laa.2017.12.020',
                 lambda stream, filename: None,
-                apikey='f7840794d3322d4b56a9cf687aecfccb'
+                apikey=GetElsevierFulltextTest.apikey
             )
         self.assertIn('Response limited to first page', str(context.exception))
 
@@ -39,6 +43,6 @@ class GetElsevierFulltextTest(TestCase):
             get_elsevier_fulltext(
                 '10.1103/non-existent',
                 lambda stream, filename: None,
-                apikey='f7840794d3322d4b56a9cf687aecfccb'
+                apikey=GetElsevierFulltextTest.apikey
             )
         self.assertIn('Not Found', str(context.exception))

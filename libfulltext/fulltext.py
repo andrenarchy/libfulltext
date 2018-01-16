@@ -35,7 +35,7 @@ def get_fulltext(prefixed_identifier, config):
         raise ValueError('Prefix {0} unknown.'.format(prefix))
 
     # fulltext sanitisation:
-    fulltext_dirname = os.path.abspath(config["storage"]["fulltext"])
+    fulltext_dirname = os.path.abspath(config["storage_fulltext"])
 
     def save_stream(stream, path):
         """Save a stream to fulltext_dirname/prefix/identifier/path

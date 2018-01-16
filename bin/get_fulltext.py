@@ -14,7 +14,8 @@ CLICK_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 @click.command(context_settings=CLICK_SETTINGS)
 @click.option("-c", "--config", default=libfulltext.config.DEFAULT_CONFIG_PATH,
-              type=click.File(), help="Path to the configuration file to use.")
+              type=click.Path(dir_okay=False, resolve_path=True),
+              help="Path to the configuration file to use.")
 @click.argument("prefixed_ids", nargs=-1, default=None)
 @click.option("-f", "--prefixed-id-file", default="-", type=click.File(),
               help="File with list of prefixed document identifiers, one per line. "
@@ -42,7 +43,8 @@ def get_fulltext(config, prefixed_ids, prefixed_id_file, directory):
     #     SystemExit: incompatible inputs (identifiers from multiple inputs)
 
     # Setup the config dictionary:
-    cfg = libfulltext.config.parse(config)
+
+    cfg = libfulltext.config.obtain(path=config, environment=True)
     if directory is not None:
         cfg["storage"]["fulltext"] = directory
 
