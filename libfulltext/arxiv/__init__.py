@@ -2,9 +2,11 @@
 """arXiv handler module"""
 
 import requests
+import re
 from lxml import etree
 
 from ..response import verify
+from ..exceptions import PDFLinkExtractionFailure
 
 
 def get_arxiv_fulltext(arxiv_id, save_stream, config):
@@ -22,9 +24,12 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
         What the actual getter returns (usually None)
 
     Raises:
-        ValueError:           did not obtain exactly one query result or
-                              entry did not contain pdf link
+        ValueError:           function was not called with exactly one ID
         NotImplementedError:  multiple arXiv IDs provided
+        requests.exceptions.InvalidHeader:
+                              the Content-Type of the pdf download is not that of a pdf
+        libfulltext.exceptions.PDFLinkExtractionFailure:
+                              the arXiv response does not except exactly one pdf link
     """
 
     if "," in arxiv_id:
@@ -44,8 +49,18 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
         raise ValueError("Did not obtain any arXiv article")
 
     entry = entries[0]
-
     # the document's DOI is at `doi = entry.findall("./{*}doi")[0].text`
+
+    try:
+        canonical_id = entry.findall("./{*}id")[0].text
+    except KeyError:
+        print("The canonical arXiv ID for {} wasn't found in the server"
+              " response.".format(arxiv_id))
+
+    canonical_id = re.sub(".*\/", "", entry.findall("./{*}id")[0].text)
+    if canonical_id != arxiv_id:
+        print("The provided ID {} doesn't seem to be canonical, it resolves to"
+              " {}.".format(arxiv_id, canonical_id))
 
     pdf_links = []
     for element in entry.findall("./{*}link"):
@@ -53,13 +68,14 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
             pdf_links.append(element.get("href"))
 
     if not pdf_links:
-        raise ValueError("Didn't contain a pdf link")
+        raise PDFLinkExtractionFailure("No PDF link in {} response found."
+                                       .format(arxiv_id))
     elif len(pdf_links) > 1:
-        raise ValueError("Ambiguous pdf links")
+        raise PDFLinkExtractionFailure("Multiple PDF links in {} response found."
+                                       .format(arxiv_id))
 
     response = requests.get(pdf_links[0],
-                            stream=True
-                           )
+                            stream=True)
 
     verify(response, 'application/pdf')
 
