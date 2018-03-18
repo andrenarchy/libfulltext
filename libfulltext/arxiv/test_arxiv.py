@@ -22,8 +22,10 @@ class GetArxivFulltextTest(TestCase):
 
     def test_missing_pdf(self):
         """Check an arxiv entry without pdf."""
-        # TODO: expected different API result
-        # with self.assertRaises(ValueError) as context:
+        # One would expect a libfulltext.exceptions.PDFLinkExtractionFailure
+        # exception here, but the API actually returns a pdf link, which just
+        # doesn't provide a downloadable pdf. (And a human readable error
+        # message)
         with self.assertRaises(requests.exceptions.InvalidHeader) as context:
             get_arxiv_fulltext('physics/0701199',
                                lambda stream, filename: None,
@@ -33,8 +35,9 @@ class GetArxivFulltextTest(TestCase):
 
     def test_non_existent_id(self):
         """A non-existing ID should result in an error"""
+        # One would expect a libfulltext.exceptions.EntryNotFound exception
+        # here, but the API actually returns a pdf link, which just doesn't
+        # provide a downloadable pdf. (And a human readable error message)
         with self.assertRaises(PDFLinkExtractionFailure) as context:
             get_arxiv_fulltext('hep-ex/invalid', lambda stream, filename: None, None)
-        # TODO: absurdly, this DOES return an entry, just without pdf
-        # self.assertIn('Did not obtain any arXiv article', str(context.exception))
         self.assertIn("No PDF link", str(context.exception))

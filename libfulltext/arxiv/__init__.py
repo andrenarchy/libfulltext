@@ -1,15 +1,17 @@
 # copyright © 2018 the libfulltext authors (see AUTHORS.md and LICENSE)
 """arXiv handler module"""
 
-import requests
 import re
+import requests
 from lxml import etree
 
 from ..response import verify
 from ..exceptions import PDFLinkExtractionFailure
+from ..exceptions import EntryNotFound
 
 
 def get_arxiv_fulltext(arxiv_id, save_stream, config):
+    # pylint: disable=unused-argument
     """Get the fulltext for an arXiv ID
 
     At the moment meant to handle one arXiv ID at a time, though the arxiv
@@ -30,6 +32,8 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
                               the Content-Type of the pdf download is not that of a pdf
         libfulltext.exceptions.PDFLinkExtractionFailure:
                               the arXiv response does not except exactly one pdf link
+        libfulltext.exceptions.EntryNotFound:
+                              the arXiv response did not contain an entry
     """
 
     if "," in arxiv_id:
@@ -46,7 +50,7 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
     if len(entries) > 1:
         raise ValueError("Obtained more than one arXiv article")
     elif not entries:
-        raise ValueError("Did not obtain any arXiv article")
+        raise EntryNotFound("arXiv entry for ID {} not found.".format(arxiv_id))
 
     entry = entries[0]
     # the document's DOI is at `doi = entry.findall("./{*}doi")[0].text`
@@ -57,7 +61,7 @@ def get_arxiv_fulltext(arxiv_id, save_stream, config):
         print("The canonical arXiv ID for {} wasn't found in the server"
               " response.".format(arxiv_id))
 
-    canonical_id = re.sub(".*\/", "", entry.findall("./{*}id")[0].text)
+    canonical_id = re.sub(".*/", "", entry.findall("./{*}id")[0].text)
     if canonical_id != arxiv_id:
         print("The provided ID {} doesn't seem to be canonical, it resolves to"
               " {}.".format(arxiv_id, canonical_id))

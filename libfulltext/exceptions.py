@@ -4,3 +4,7 @@
 
 class PDFLinkExtractionFailure(Exception):
     """PDF download link could not be found in response"""
+
+
+class EntryNotFound(Exception):
+    """ID was not found on server"""
